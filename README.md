@@ -102,6 +102,28 @@ bun run lint:fix     # Auto-fix lint issues
 bun run package      # Build VSIX package
 ```
 
+## Releasing
+
+Releases are automated via GitHub Actions on tag push:
+
+```bash
+# Stable release
+git tag v0.2.0 && git push origin v0.2.0
+
+# Pre-release (beta, rc, etc.)
+git tag v0.3.0-beta.1 && git push origin v0.3.0-beta.1
+```
+
+Tags with a suffix (e.g., `-beta.1`, `-rc.1`) are packaged with the
+`--pre-release` flag and marked as pre-release on GitHub.
+
+> **Note:** The VS Code Marketplace does not support semver pre-release tags in
+> the `version` field of `package.json` — it must always be plain
+> `MAJOR.MINOR.PATCH`. The git tag suffix is used only as a workflow signal to
+> pass `--pre-release` to `vsce package`. By convention, even minor versions
+> (e.g., `0.2.x`) denote stable releases and odd minor versions (e.g., `0.3.x`)
+> denote pre-releases.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
