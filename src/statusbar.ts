@@ -19,7 +19,7 @@ export function updateStatusBar(state: StatusBarState): void {
 
   switch (state) {
     case "ready":
-      statusBarItem.text = "$(sparkle) Leyline";
+      statusBarItem.text = "$(leyline-sparkle) Leyline";
       statusBarItem.tooltip = "Leyline: Inline completion enabled";
       statusBarItem.backgroundColor = undefined;
       break;

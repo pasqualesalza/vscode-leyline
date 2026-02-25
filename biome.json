@@ -24,7 +24,8 @@
       "!**/node_modules",
       "!**/dist",
       "!**/coverage",
-      "!**/.vscode"
+      "!**/.vscode",
+      "!**/assets/*.json"
     ]
   }
 }

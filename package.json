@@ -59,6 +59,15 @@
     "onStartupFinished"
   ],
   "contributes": {
+    "icons": {
+      "leyline-sparkle": {
+        "description": "Leyline sparkle icon",
+        "default": {
+          "fontPath": "assets/leyline.woff",
+          "fontCharacter": "\\f101"
+        }
+      }
+    },
     "commands": [
       {
         "command": "leyline.setApiKey",
