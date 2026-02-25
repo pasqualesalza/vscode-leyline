@@ -6,4 +6,4 @@ coverage/
 .lefthook-local.yml
 PLAN.md
 .claude/
-.vscode/
+.vscode/settings.json
