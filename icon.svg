@@ -1,10 +1,59 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <!-- Radial glow behind the sparkle -->
+    <radialGradient id="glow" cx="50%" cy="50%" r="40%">
+      <stop offset="0%" stop-color="#67e8f9" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#67e8f9" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Gradient for leylines -->
+    <linearGradient id="line-fade-l" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#67e8f9" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="line-fade-v" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#67e8f9" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+    </linearGradient>
+    <!-- Diagonal line gradients -->
+    <linearGradient id="line-fade-d1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#67e8f9" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="line-fade-d2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#67e8f9" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
   <rect width="128" height="128" rx="16" fill="#1e1e1e"/>
+
+  <!-- Ambient glow -->
+  <circle cx="64" cy="64" r="52" fill="url(#glow)"/>
+
+  <!-- Leylines — energy paths radiating from center -->
+  <!-- Horizontal -->
+  <line x1="8" y1="64" x2="120" y2="64" stroke="url(#line-fade-l)" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Vertical -->
+  <line x1="64" y1="8" x2="64" y2="120" stroke="url(#line-fade-v)" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Diagonal TL-BR -->
+  <line x1="20" y1="20" x2="108" y2="108" stroke="url(#line-fade-d1)" stroke-width="0.8" stroke-linecap="round"/>
+  <!-- Diagonal TR-BL -->
+  <line x1="108" y1="20" x2="20" y2="108" stroke="url(#line-fade-d2)" stroke-width="0.8" stroke-linecap="round"/>
+
+  <!-- Sparkle — 4-pointed star -->
   <g transform="translate(64,64)">
-    <!-- Leyline sparkle/star -->
-    <path d="M0,-40 L6,-12 L40,0 L6,12 L0,40 L-6,12 L-40,0 L-6,-12 Z" fill="#c084fc" opacity="0.9"/>
-    <path d="M0,-24 L4,-8 L24,0 L4,8 L0,24 L-4,8 L-24,0 L-4,-8 Z" fill="#e9d5ff"/>
-    <!-- Center dot -->
-    <circle cx="0" cy="0" r="4" fill="#ffffff"/>
+    <!-- Outer sparkle (cyan) -->
+    <path d="M0,-32 L5,-10 L32,0 L5,10 L0,32 L-5,10 L-32,0 L-5,-10 Z"
+          fill="#22d3ee" opacity="0.85"/>
+    <!-- Inner sparkle (light cyan / white) -->
+    <path d="M0,-18 L3,-6 L18,0 L3,6 L0,18 L-3,6 L-18,0 L-3,-6 Z"
+          fill="#cffafe"/>
+    <!-- Center bright point -->
+    <circle cx="0" cy="0" r="3" fill="#ffffff"/>
   </g>
 </svg>

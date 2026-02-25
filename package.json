@@ -30,8 +30,13 @@
   "engines": {
     "vscode": "^1.94.0"
   },
-  "extensionKind": ["ui"],
-  "categories": ["Programming Languages", "Machine Learning"],
+  "extensionKind": [
+    "ui"
+  ],
+  "categories": [
+    "Programming Languages",
+    "Machine Learning"
+  ],
   "capabilities": {
     "virtualWorkspaces": {
       "supported": false,
@@ -50,7 +55,9 @@
     }
   },
   "main": "./dist/extension.js",
-  "activationEvents": ["onStartupFinished"],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "contributes": {
     "commands": [
       {
@@ -71,7 +78,10 @@
       "properties": {
         "leyline.provider": {
           "type": "string",
-          "enum": ["azure-openai", "openai"],
+          "enum": [
+            "azure-openai",
+            "openai"
+          ],
           "default": "azure-openai",
           "scope": "machine-overridable",
           "description": "Completion provider to use"
@@ -154,12 +164,12 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.4.4",
     "@types/node": "^22",
     "@types/vscode": "^1.94.0",
     "@vscode/vsce": "^3",
-    "esbuild": "^0.25",
-    "typescript": "~5.7",
-    "vitest": "^3.0.6"
+    "esbuild": "^0.27.3",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.18"
   }
 }
