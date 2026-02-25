@@ -163,6 +163,7 @@
     }
   },
   "scripts": {
+    "generate-icons": "bunx fantasticon assets --output assets --name leyline --font-types woff --asset-types json --font-height 1024 --normalize",
     "compile": "tsc --noEmit && node esbuild.js",
     "watch": "node esbuild.js --watch",
     "check-types": "tsc --noEmit",
