@@ -1,0 +1,31 @@
+# Source and tests
+src/**
+test/**
+
+# Build configuration
+.vscode/**
+.github/**
+.claude/**
+**/*.ts
+!dist/**/*.js
+**/*.map
+*.svg
+tsconfig.json
+esbuild.js
+biome.json
+lefthook.yml
+vitest.config.ts
+
+# Dev artifacts
+node_modules/**
+coverage/**
+*.vsix
+
+# Repo metadata
+.gitignore
+.gitattributes
+.editorconfig
+.vscodeignore
+bun.lock
+PLAN.md
+CONTRIBUTING.md

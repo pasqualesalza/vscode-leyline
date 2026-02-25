@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+*.vsix
+*.tsbuildinfo
+.lefthook-local.yml
+PLAN.md
+.claude/
+.vscode/
