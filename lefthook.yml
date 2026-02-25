@@ -1,0 +1,5 @@
+pre-commit:
+  commands:
+    lint:
+      glob: "*.{js,ts,json}"
+      run: bunx biome check --staged --no-errors-on-unmatched {staged_files}
