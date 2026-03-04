@@ -37,12 +37,16 @@ jobs:
             echo "vsce_flag=" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Extract release notes
+        id: release-notes
+        uses: ffurrer2/extract-release-notes@v3
+
       - name: Package VSIX
         run: bunx @vscode/vsce package --no-dependencies ${{ steps.meta.outputs.vsce_flag }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          generate_release_notes: true
+          body: ${{ steps.release-notes.outputs.release_notes }}
           prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
           files: "*.vsix"
