@@ -1,9 +1,12 @@
 node_modules/
 dist/
+out/
+.vscode-test/
 coverage/
 *.vsix
 *.tsbuildinfo
 .lefthook-local.yml
 PLAN.md
+.env
 .claude/
 .vscode/settings.json

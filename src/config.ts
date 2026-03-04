@@ -1,27 +1,36 @@
 import * as vscode from "vscode";
+import type { ProviderConfig } from "./types.js";
 
 function cfg() {
   return vscode.workspace.getConfiguration("leyline");
 }
 
-export function provider(): "azure-openai" | "openai" {
-  return cfg().get<"azure-openai" | "openai">("provider", "azure-openai");
+const providerDefaults: Record<string, ProviderConfig> = {
+  codestral: {
+    endpoint: "https://codestral.mistral.ai",
+    model: "codestral-latest",
+    maxTokens: 256,
+  },
+  ollama: {
+    endpoint: "http://localhost:11434",
+    model: "qwen2.5-coder:7b",
+    maxTokens: 256,
+  },
+};
+
+export function provider(): "codestral" | "ollama" {
+  return cfg().get<"codestral" | "ollama">("provider", "codestral");
 }
 
-export function endpoint(): string {
-  return cfg().get<string>("endpoint", "");
-}
+export function providerConfig(name: string): ProviderConfig {
+  const defaults = providerDefaults[name] ?? providerDefaults.codestral;
 
-export function deployment(): string {
-  return cfg().get<string>("deployment", "gpt-5.1-codex-mini");
-}
+  const endpoint =
+    cfg().get<string>(`${name}.endpoint`, "") || defaults.endpoint;
+  const model = cfg().get<string>(`${name}.model`, "") || defaults.model;
+  const maxTokens = cfg().get<number>(`${name}.maxTokens`, defaults.maxTokens);
 
-export function apiVersion(): string {
-  return cfg().get<string>("apiVersion", "2024-06-01");
-}
-
-export function model(): string {
-  return cfg().get<string>("model", "gpt-4o");
+  return { endpoint, model, maxTokens };
 }
 
 export function enabled(): boolean {
@@ -30,14 +39,6 @@ export function enabled(): boolean {
 
 export async function setEnabled(value: boolean): Promise<void> {
   await cfg().update("enabled", value, vscode.ConfigurationTarget.Global);
-}
-
-export function maxTokens(): number {
-  return cfg().get<number>("maxTokens", 256);
-}
-
-export function temperature(): number {
-  return cfg().get<number>("temperature", 0);
 }
 
 export function debounceMs(): number {

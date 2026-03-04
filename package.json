@@ -19,8 +19,9 @@
     "AI",
     "copilot alternative",
     "ghost text",
-    "azure openai",
-    "openai"
+    "codestral",
+    "ollama",
+    "mistral"
   ],
   "icon": "icon.png",
   "galleryBanner": {
@@ -44,13 +45,13 @@
     },
     "untrustedWorkspaces": {
       "supported": "limited",
-      "description": "Endpoint and deployment settings are ignored in untrusted workspaces to prevent API key exfiltration.",
+      "description": "Endpoint and model settings are ignored in untrusted workspaces to prevent API key exfiltration.",
       "restrictedConfigurations": [
-        "leyline.endpoint",
-        "leyline.deployment",
-        "leyline.apiVersion",
-        "leyline.model",
-        "leyline.provider"
+        "leyline.provider",
+        "leyline.codestral.endpoint",
+        "leyline.codestral.model",
+        "leyline.ollama.endpoint",
+        "leyline.ollama.model"
       ]
     }
   },
@@ -80,6 +81,10 @@
       {
         "command": "leyline.selectProvider",
         "title": "Leyline: Select Provider"
+      },
+      {
+        "command": "leyline.showMenu",
+        "title": "Leyline: Show Menu"
       }
     ],
     "configuration": {
@@ -88,55 +93,55 @@
         "leyline.provider": {
           "type": "string",
           "enum": [
-            "azure-openai",
-            "openai"
+            "codestral",
+            "ollama"
           ],
-          "default": "azure-openai",
+          "default": "codestral",
           "scope": "machine-overridable",
-          "description": "Completion provider to use"
+          "description": "Completion provider. Codestral uses Mistral FIM API, Ollama runs models locally."
         },
-        "leyline.endpoint": {
+        "leyline.codestral.endpoint": {
           "type": "string",
           "default": "",
           "scope": "machine-overridable",
-          "description": "API endpoint URL (e.g., https://my-resource.openai.azure.com)"
+          "description": "Codestral API endpoint URL. Leave empty for default (https://codestral.mistral.ai)"
         },
-        "leyline.deployment": {
+        "leyline.codestral.model": {
           "type": "string",
-          "default": "gpt-5.1-codex-mini",
+          "default": "",
           "scope": "machine-overridable",
-          "description": "Azure OpenAI deployment name"
+          "description": "Codestral model name. Leave empty for default (codestral-latest)"
         },
-        "leyline.apiVersion": {
-          "type": "string",
-          "default": "2024-06-01",
-          "scope": "machine-overridable",
-          "description": "Azure OpenAI API version"
+        "leyline.codestral.maxTokens": {
+          "type": "number",
+          "default": 256,
+          "minimum": 1,
+          "maximum": 4096,
+          "description": "Maximum tokens in Codestral completion response"
         },
-        "leyline.model": {
+        "leyline.ollama.endpoint": {
           "type": "string",
-          "default": "gpt-4o",
+          "default": "",
           "scope": "machine-overridable",
-          "description": "Model name (for OpenAI provider)"
+          "description": "Ollama API endpoint URL. Leave empty for default (http://localhost:11434)"
+        },
+        "leyline.ollama.model": {
+          "type": "string",
+          "default": "",
+          "scope": "machine-overridable",
+          "description": "Ollama model name. Leave empty for default (qwen2.5-coder:7b)"
+        },
+        "leyline.ollama.maxTokens": {
+          "type": "number",
+          "default": 256,
+          "minimum": 1,
+          "maximum": 4096,
+          "description": "Maximum tokens in Ollama completion response"
         },
         "leyline.enabled": {
           "type": "boolean",
           "default": true,
           "description": "Enable inline code completion"
-        },
-        "leyline.maxTokens": {
-          "type": "number",
-          "default": 256,
-          "minimum": 1,
-          "maximum": 4096,
-          "description": "Maximum tokens in completion response"
-        },
-        "leyline.temperature": {
-          "type": "number",
-          "default": 0,
-          "minimum": 0,
-          "maximum": 2,
-          "description": "Sampling temperature (0 = deterministic)"
         },
         "leyline.debounceMs": {
           "type": "number",
@@ -171,14 +176,21 @@
     "lint:fix": "biome check --write .",
     "vscode:prepublish": "tsc --noEmit && node esbuild.js --production",
     "package": "bunx @vscode/vsce package --no-dependencies",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e:compile": "tsc -p tsconfig.e2e.json",
+    "test:e2e": "bun run test:e2e:compile && vscode-test",
+    "bench": "vitest bench --run"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.4",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^22",
     "@types/vscode": "^1.94.0",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3",
     "esbuild": "^0.27.3",
+    "mocha": "^11.7.5",
     "typescript": "~5.9.3",
     "vitest": "^4.0.18"
   }

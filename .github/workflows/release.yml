@@ -18,6 +18,7 @@ jobs:
       - run: bun run check-types
       - run: bun run lint
       - run: bun run test
+      - run: xvfb-run -a bun run test:e2e
 
       - name: Detect pre-release
         id: meta

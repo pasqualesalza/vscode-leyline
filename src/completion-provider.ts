@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as config from "./config.js";
-import { extractContext } from "./prompt.js";
+import { extractContext, postProcess, stripLeadingIndent } from "./prompt.js";
 import type { CompletionProvider } from "./providers/provider.js";
 import { updateStatusBar } from "./statusbar.js";
 
@@ -70,7 +70,19 @@ export class LeylineCompletionProvider
             signal,
           );
 
-          if (token.isCancellationRequested || !completion) {
+          const trimmed = completion
+            ? postProcess(completion, prefix, suffix)
+            : null;
+          const currentLinePrefix = document
+            .lineAt(position.line)
+            .text.slice(0, position.character);
+          const editorTabSize = vscode.window.activeTextEditor?.options.tabSize;
+          const tabSize = typeof editorTabSize === "number" ? editorTabSize : 4;
+          const adjusted = trimmed
+            ? stripLeadingIndent(trimmed, currentLinePrefix, tabSize)
+            : null;
+
+          if (token.isCancellationRequested || !adjusted) {
             if (isActive()) updateStatusBar("ready");
             this.settle(resolve, undefined);
             return;
@@ -79,7 +91,7 @@ export class LeylineCompletionProvider
           if (isActive()) updateStatusBar("ready");
           this.settle(resolve, [
             new vscode.InlineCompletionItem(
-              completion,
+              adjusted,
               new vscode.Range(position, position),
             ),
           ]);

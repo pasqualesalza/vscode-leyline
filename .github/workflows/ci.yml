@@ -21,3 +21,4 @@ jobs:
       - run: bun run compile
       - run: bun run lint
       - run: bun run test
+      - run: xvfb-run -a bun run test:e2e

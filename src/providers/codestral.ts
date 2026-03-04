@@ -1,34 +1,36 @@
-import * as config from "../config.js";
-import { buildFIMMessages } from "../prompt.js";
+import type { ProviderConfig } from "../types.js";
 import type { CompletionProvider } from "./provider.js";
 
-export class AzureOpenAIProvider implements CompletionProvider {
-  readonly name = "azure-openai";
+export class CodestralProvider implements CompletionProvider {
+  readonly name = "codestral";
   private readonly getApiKey: () => Promise<string | undefined>;
+  private readonly config: ProviderConfig;
 
-  constructor(getApiKey: () => Promise<string | undefined>) {
+  constructor(
+    getApiKey: () => Promise<string | undefined>,
+    config: ProviderConfig,
+  ) {
     this.getApiKey = getApiKey;
+    this.config = config;
   }
 
   async complete(
     prefix: string,
     suffix: string,
-    language: string,
+    _language: string,
     signal: AbortSignal,
   ): Promise<string | null> {
     const apiKey = await this.getApiKey();
     if (!apiKey) return null;
 
-    const ep = config.endpoint().replace(/\/+$/, "");
-    const dep = config.deployment();
-    const ver = config.apiVersion();
-    const url = `${ep}/openai/deployments/${dep}/chat/completions?api-version=${ver}`;
+    const ep = this.config.endpoint.replace(/\/+$/, "");
+    const url = `${ep}/v1/fim/completions`;
 
-    const messages = buildFIMMessages(prefix, suffix, language, "");
     const body = {
-      messages,
-      max_tokens: config.maxTokens(),
-      temperature: config.temperature(),
+      model: this.config.model,
+      prompt: prefix,
+      suffix,
+      max_tokens: this.config.maxTokens,
       stop: ["\n\n"],
     };
 
@@ -36,7 +38,7 @@ export class AzureOpenAIProvider implements CompletionProvider {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "api-key": apiKey,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify(body),
       signal,
@@ -44,7 +46,7 @@ export class AzureOpenAIProvider implements CompletionProvider {
 
     if (!response.ok) {
       throw new Error(
-        `Azure OpenAI API error: ${response.status} ${response.statusText}`,
+        `Codestral API error: ${response.status} ${response.statusText}`,
       );
     }
 

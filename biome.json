@@ -23,6 +23,8 @@
       "**",
       "!**/node_modules",
       "!**/dist",
+      "!**/out",
+      "!**/.vscode-test",
       "!**/coverage",
       "!**/.vscode",
       "!**/assets/*.json"

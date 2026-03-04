@@ -1,6 +1,8 @@
 # Source and tests
 src/**
 test/**
+test-e2e/**
+out/**
 
 # Build configuration
 .vscode/**
@@ -12,6 +14,8 @@ test/**
 **/*.svg
 assets/*.json
 tsconfig.json
+tsconfig.e2e.json
+.vscode-test.mjs
 esbuild.js
 biome.json
 lefthook.yml
@@ -21,6 +25,8 @@ vitest.config.ts
 node_modules/**
 coverage/**
 *.vsix
+
+.env
 
 # Repo metadata
 .gitignore

@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import { LeylineCompletionProvider } from "./completion-provider.js";
 import * as config from "./config.js";
-import { AzureOpenAIProvider } from "./providers/azure-openai.js";
-import { OpenAIProvider } from "./providers/openai.js";
+import { CodestralProvider } from "./providers/codestral.js";
+import { OllamaProvider } from "./providers/ollama.js";
 import type { CompletionProvider } from "./providers/provider.js";
 import { getApiKey, initSecretStorage, setApiKey } from "./secret.js";
 import { createStatusBar, updateStatusBar } from "./statusbar.js";
@@ -12,11 +12,12 @@ let currentProvider: CompletionProvider | undefined;
 function buildProvider(): CompletionProvider {
   const name = config.provider();
   const keyGetter = () => getApiKey(name);
+  const providerCfg = config.providerConfig(name);
 
-  if (name === "openai") {
-    return new OpenAIProvider(keyGetter);
+  if (name === "ollama") {
+    return new OllamaProvider(keyGetter, providerCfg);
   }
-  return new AzureOpenAIProvider(keyGetter);
+  return new CodestralProvider(keyGetter, providerCfg);
 }
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -24,7 +25,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
   currentProvider = buildProvider();
   const statusBar = createStatusBar();
-  updateStatusBar(config.enabled() ? "ready" : "disabled");
+  updateStatusBar(config.enabled() ? "ready" : "disabled", config.provider());
 
   const completionProvider = new LeylineCompletionProvider(
     () => currentProvider,
@@ -39,8 +40,9 @@ export function activate(context: vscode.ExtensionContext): void {
     "leyline.setApiKey",
     async () => {
       const providerName = config.provider();
+      const providerCfg = config.providerConfig(providerName);
       const key = await vscode.window.showInputBox({
-        prompt: `Enter API key for ${providerName}`,
+        prompt: `Enter API key for ${providerName} (${providerCfg.endpoint})`,
         password: true,
         placeHolder: "Paste your API key here",
       });
@@ -58,7 +60,7 @@ export function activate(context: vscode.ExtensionContext): void {
     async () => {
       const newValue = !config.enabled();
       await config.setEnabled(newValue);
-      updateStatusBar(newValue ? "ready" : "disabled");
+      updateStatusBar(newValue ? "ready" : "disabled", config.provider());
       if (!newValue) {
         completionProvider.cancel();
       }
@@ -70,8 +72,8 @@ export function activate(context: vscode.ExtensionContext): void {
     async () => {
       const pick = await vscode.window.showQuickPick(
         [
-          { label: "Azure OpenAI", value: "azure-openai" },
-          { label: "OpenAI", value: "openai" },
+          { label: "Codestral", value: "codestral" },
+          { label: "Ollama", value: "ollama" },
         ],
         { placeHolder: "Select a completion provider" },
       );
@@ -83,10 +85,42 @@ export function activate(context: vscode.ExtensionContext): void {
     },
   );
 
+  const showMenuCmd = vscode.commands.registerCommand(
+    "leyline.showMenu",
+    async () => {
+      const isEnabled = config.enabled();
+      const current = config.provider();
+      const items = [
+        {
+          label: isEnabled ? "$(circle-slash) Disable" : "$(check) Enable",
+          description: "Inline completion",
+          action: "toggle" as const,
+        },
+        {
+          label: "$(server) Switch Provider",
+          description: `Current: ${current}`,
+          action: "selectProvider" as const,
+        },
+        {
+          label: "$(key) Set API Key",
+          description: `For ${current}`,
+          action: "setApiKey" as const,
+        },
+      ];
+      const pick = await vscode.window.showQuickPick(items, {
+        placeHolder: "Leyline",
+      });
+      if (pick) await vscode.commands.executeCommand(`leyline.${pick.action}`);
+    },
+  );
+
   const configListener = vscode.workspace.onDidChangeConfiguration((e) => {
     if (e.affectsConfiguration("leyline")) {
       currentProvider = buildProvider();
-      updateStatusBar(config.enabled() ? "ready" : "disabled");
+      updateStatusBar(
+        config.enabled() ? "ready" : "disabled",
+        config.provider(),
+      );
     }
   });
 
@@ -96,6 +130,7 @@ export function activate(context: vscode.ExtensionContext): void {
     setApiKeyCmd,
     toggleCmd,
     selectProviderCmd,
+    showMenuCmd,
     configListener,
     { dispose: () => completionProvider.dispose() },
   );
