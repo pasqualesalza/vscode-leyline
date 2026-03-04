@@ -4,7 +4,27 @@
     {
       "type": "shell",
       "command": "bun run watch",
-      "problemMatcher": "$esbuild-watch",
+      "problemMatcher": {
+        "owner": "esbuild",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": [
+          {
+            "regexp": "✘ \\[ERROR\\] (.+)",
+            "message": 1
+          },
+          {
+            "regexp": "^\\s+(.+):(\\d+):(\\d+):",
+            "file": 1,
+            "line": 2,
+            "column": 3
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "\\[watch\\] build started",
+          "endsPattern": "\\[watch\\] build finished"
+        }
+      },
       "isBackground": true,
       "presentation": {
         "reveal": "never"
@@ -14,6 +34,15 @@
         "isDefault": true
       },
       "label": "bun: watch"
+    },
+    {
+      "type": "shell",
+      "command": "bun run test:e2e:compile",
+      "problemMatcher": "$tsc",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "label": "test:e2e:compile"
     }
   ]
 }

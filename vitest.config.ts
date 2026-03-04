@@ -4,6 +4,9 @@ export default defineConfig({
   test: {
     include: ["test/**/*.test.ts"],
   },
+  benchmark: {
+    include: ["test/**/*.bench.ts"],
+  },
   plugins: [
     {
       name: "vscode-resolve",
