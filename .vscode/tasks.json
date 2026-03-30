@@ -1,0 +1,63 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "command": "bun run watch",
+      "problemMatcher": {
+        "owner": "esbuild",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": [
+          {
+            "regexp": "✘ \\[ERROR\\] (.+)",
+            "message": 1
+          },
+          {
+            "regexp": "^\\s+(.+):(\\d+):(\\d+):",
+            "file": 1,
+            "line": 2,
+            "column": 3
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "\\[watch\\] build started",
+          "endsPattern": "\\[watch\\] build finished"
+        }
+      },
+      "isBackground": true,
+      "presentation": {
+        "reveal": "never"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "label": "bun: watch"
+    },
+    {
+      "type": "shell",
+      "command": "bun run test:e2e:compile",
+      "problemMatcher": "$tsc",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "label": "test:e2e:compile"
+    },
+    {
+      "type": "shell",
+      "command": "node ${workspaceFolder}/scripts/copy-playground.mjs",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent"
+      },
+      "label": "playground:copy"
+    },
+    {
+      "label": "build+playground",
+      "dependsOn": ["bun: watch", "playground:copy"],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    }
+  ]
+}

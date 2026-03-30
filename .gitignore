@@ -1,9 +1,13 @@
 node_modules/
 dist/
+out/
+.vscode-test/
 coverage/
 *.vsix
 *.tsbuildinfo
 .lefthook-local.yml
 PLAN.md
+.env
+.leyline-playground
 .claude/
-.vscode/
+.vscode/settings.json

@@ -1,6 +1,6 @@
 {
   "name": "leyline",
-  "displayName": "Leyline",
+  "displayName": "Leyline: Code Anticipation",
   "description": "Lightweight inline code completion using configurable AI endpoints",
   "version": "0.1.0",
   "publisher": "pasqualesalza",
@@ -19,9 +19,20 @@
     "AI",
     "copilot alternative",
     "ghost text",
-    "azure openai",
-    "openai"
+    "codestral",
+    "ollama",
+    "mistral",
+    "autocomplete",
+    "FIM",
+    "fill in the middle",
+    "code suggestion",
+    "intellisense",
+    "tree-sitter",
+    "local AI",
+    "self-hosted"
   ],
+  "pricing": "Free",
+  "qna": "https://github.com/pasqualesalza/vscode-leyline/issues/new/choose",
   "icon": "icon.png",
   "galleryBanner": {
     "color": "#1e1e1e",
@@ -30,8 +41,14 @@
   "engines": {
     "vscode": "^1.94.0"
   },
-  "extensionKind": ["ui"],
-  "categories": ["Programming Languages", "Machine Learning"],
+  "extensionKind": [
+    "ui"
+  ],
+  "categories": [
+    "Programming Languages",
+    "Machine Learning",
+    "AI"
+  ],
   "capabilities": {
     "virtualWorkspaces": {
       "supported": false,
@@ -39,19 +56,31 @@
     },
     "untrustedWorkspaces": {
       "supported": "limited",
-      "description": "Endpoint and deployment settings are ignored in untrusted workspaces to prevent API key exfiltration.",
+      "description": "Endpoint and model settings are ignored in untrusted workspaces to prevent API key exfiltration.",
       "restrictedConfigurations": [
-        "leyline.endpoint",
-        "leyline.deployment",
-        "leyline.apiVersion",
-        "leyline.model",
-        "leyline.provider"
+        "leyline.provider",
+        "leyline.codestral.endpoint",
+        "leyline.codestral.model",
+        "leyline.ollama.endpoint",
+        "leyline.ollama.model",
+        "leyline.treeSitter"
       ]
     }
   },
   "main": "./dist/extension.js",
-  "activationEvents": ["onStartupFinished"],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "contributes": {
+    "icons": {
+      "leyline-sparkle": {
+        "description": "Leyline sparkle icon",
+        "default": {
+          "fontPath": "assets/leyline.woff",
+          "fontCharacter": "\\f101"
+        }
+      }
+    },
     "commands": [
       {
         "command": "leyline.setApiKey",
@@ -64,86 +93,189 @@
       {
         "command": "leyline.selectProvider",
         "title": "Leyline: Select Provider"
+      },
+      {
+        "command": "leyline.showMenu",
+        "title": "Leyline: Show Menu"
+      },
+      {
+        "command": "leyline.trigger",
+        "title": "Leyline: Trigger Inline Completion"
       }
     ],
-    "configuration": {
-      "title": "Leyline",
-      "properties": {
-        "leyline.provider": {
-          "type": "string",
-          "enum": ["azure-openai", "openai"],
-          "default": "azure-openai",
-          "scope": "machine-overridable",
-          "description": "Completion provider to use"
-        },
-        "leyline.endpoint": {
-          "type": "string",
-          "default": "",
-          "scope": "machine-overridable",
-          "description": "API endpoint URL (e.g., https://my-resource.openai.azure.com)"
-        },
-        "leyline.deployment": {
-          "type": "string",
-          "default": "gpt-5.1-codex-mini",
-          "scope": "machine-overridable",
-          "description": "Azure OpenAI deployment name"
-        },
-        "leyline.apiVersion": {
-          "type": "string",
-          "default": "2024-06-01",
-          "scope": "machine-overridable",
-          "description": "Azure OpenAI API version"
-        },
-        "leyline.model": {
-          "type": "string",
-          "default": "gpt-4o",
-          "scope": "machine-overridable",
-          "description": "Model name (for OpenAI provider)"
-        },
-        "leyline.enabled": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable inline code completion"
-        },
-        "leyline.maxTokens": {
-          "type": "number",
-          "default": 256,
-          "minimum": 1,
-          "maximum": 4096,
-          "description": "Maximum tokens in completion response"
-        },
-        "leyline.temperature": {
-          "type": "number",
-          "default": 0,
-          "minimum": 0,
-          "maximum": 2,
-          "description": "Sampling temperature (0 = deterministic)"
-        },
-        "leyline.debounceMs": {
-          "type": "number",
-          "default": 300,
-          "minimum": 0,
-          "maximum": 5000,
-          "description": "Debounce delay in milliseconds before sending a request"
-        },
-        "leyline.prefixLines": {
-          "type": "number",
-          "default": 100,
-          "minimum": 1,
-          "maximum": 500,
-          "description": "Number of lines before the cursor to include as context"
-        },
-        "leyline.suffixLines": {
-          "type": "number",
-          "default": 30,
-          "minimum": 0,
-          "maximum": 500,
-          "description": "Number of lines after the cursor to include as context"
+    "keybindings": [
+      {
+        "key": "alt+\\",
+        "command": "leyline.trigger",
+        "when": "editorTextFocus && !editorReadonly"
+      },
+      {
+        "key": "tab",
+        "command": "editor.action.inlineSuggest.commit",
+        "when": "inlineSuggestionVisible && !suggestWidgetVisible && !editorTabMovesFocus && !inSnippetMode && !renameInputVisible && leyline.tabOverride"
+      }
+    ],
+    "configuration": [
+      {
+        "title": "General",
+        "properties": {
+          "leyline.enabled": {
+            "type": "boolean",
+            "default": true,
+            "description": "Master switch for inline code completion. Toggle with the Leyline status bar icon or the 'Leyline: Toggle' command."
+          },
+          "leyline.provider": {
+            "type": "string",
+            "enum": [
+              "codestral",
+              "ollama"
+            ],
+            "default": "codestral",
+            "scope": "machine-overridable",
+            "markdownDescription": "Which AI backend to use for completions.\n- **codestral** — Mistral's FIM model via cloud API (requires API key).\n- **ollama** — Any FIM-capable model running locally (no API key needed)."
+          },
+          "leyline.tabOverride": {
+            "type": "boolean",
+            "default": true,
+            "markdownDescription": "Let `Tab` accept inline completions when IntelliSense is **not** visible. When IntelliSense is open, `Tab` still accepts the IntelliSense suggestion. Disable this if `Tab` conflicts with another extension."
+          }
+        }
+      },
+      {
+        "title": "Filters",
+        "properties": {
+          "leyline.enable": {
+            "type": "object",
+            "default": {
+              "*": true
+            },
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "markdownDescription": "Control completions per language. Keys are [VS Code language IDs](https://code.visualstudio.com/docs/languages/identifiers).\n\nExample: `{ \"*\": true, \"markdown\": false, \"json\": false }` disables completions in Markdown and JSON files while keeping them everywhere else."
+          },
+          "leyline.disableInFiles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "markdownDescription": "Glob patterns for files where completions are disabled.\n\nExample: `[\"**/*.md\", \"**/.env\", \"**/secrets/**\"]`"
+          }
+        }
+      },
+      {
+        "title": "Completion",
+        "properties": {
+          "leyline.multiline": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "always",
+              "never"
+            ],
+            "default": "auto",
+            "markdownDescription": "Controls how many lines a single completion can span.\n- **auto** — Single-line by default; multi-line inside empty function/class bodies, docstrings, and JSDoc.\n- **always** — Always allow multi-line completions.\n- **never** — Stop at the first newline."
+          },
+          "leyline.debounceMs": {
+            "type": "number",
+            "default": 300,
+            "minimum": 0,
+            "maximum": 5000,
+            "description": "How long to wait (ms) after you stop typing before requesting a completion. Lower values feel snappier but send more requests."
+          },
+          "leyline.prefixLines": {
+            "type": "number",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 500,
+            "description": "Lines of code before the cursor sent as context. More lines give the model more context but increase request size."
+          },
+          "leyline.suffixLines": {
+            "type": "number",
+            "default": 30,
+            "minimum": 0,
+            "maximum": 500,
+            "description": "Lines of code after the cursor sent as context. Helps the model avoid duplicating code that already follows."
+          },
+          "leyline.requestTimeout": {
+            "type": "number",
+            "default": 30,
+            "minimum": 5,
+            "maximum": 120,
+            "description": "Maximum seconds to wait for a completion response. Increase if you use a slow model or high-latency endpoint."
+          },
+          "leyline.cacheSize": {
+            "type": "number",
+            "default": 50,
+            "minimum": 0,
+            "maximum": 500,
+            "description": "Number of recent completions kept in memory. Cached completions appear instantly when you undo and retype. Set to 0 to disable."
+          }
+        }
+      },
+      {
+        "title": "Quality",
+        "properties": {
+          "leyline.treeSitter": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "Use [Tree-sitter](https://tree-sitter.github.io/) to validate completions before showing them. If a completion would introduce syntax errors, it is silently discarded.\n\nThe grammar for each language is downloaded once on first use (~200 KB per language) and cached locally."
+          }
+        }
+      },
+      {
+        "title": "Codestral",
+        "properties": {
+          "leyline.codestral.endpoint": {
+            "type": "string",
+            "default": "",
+            "scope": "machine-overridable",
+            "markdownDescription": "Codestral API endpoint. Leave empty to use the default (`https://codestral.mistral.ai`). Change this to point to an Azure AI or custom deployment."
+          },
+          "leyline.codestral.model": {
+            "type": "string",
+            "default": "",
+            "scope": "machine-overridable",
+            "markdownDescription": "Model identifier sent in the API request. Leave empty for the default (`codestral-latest`)."
+          },
+          "leyline.codestral.maxTokens": {
+            "type": "number",
+            "default": 256,
+            "minimum": 1,
+            "maximum": 4096,
+            "description": "Maximum number of tokens the model may generate per completion."
+          }
+        }
+      },
+      {
+        "title": "Ollama",
+        "properties": {
+          "leyline.ollama.endpoint": {
+            "type": "string",
+            "default": "",
+            "scope": "machine-overridable",
+            "markdownDescription": "Ollama API endpoint. Leave empty for the default (`http://localhost:11434`). Change this to connect to a remote Ollama instance."
+          },
+          "leyline.ollama.model": {
+            "type": "string",
+            "default": "",
+            "scope": "machine-overridable",
+            "markdownDescription": "Ollama model name. Leave empty for the default (`qwen2.5-coder:7b`). Use any FIM-capable model (e.g., `codellama:7b`, `deepseek-coder:6.7b`)."
+          },
+          "leyline.ollama.maxTokens": {
+            "type": "number",
+            "default": 256,
+            "minimum": 1,
+            "maximum": 4096,
+            "description": "Maximum number of tokens the model may generate per completion."
+          }
         }
       }
-    }
+    ]
   },
   "scripts": {
+    "generate-icons": "bunx fantasticon assets --output assets --name leyline --font-types woff --asset-types json --font-height 1024 --normalize",
     "compile": "tsc --noEmit && node esbuild.js",
     "watch": "node esbuild.js --watch",
     "check-types": "tsc --noEmit",
@@ -151,15 +283,26 @@
     "lint:fix": "biome check --write .",
     "vscode:prepublish": "tsc --noEmit && node esbuild.js --production",
     "package": "bunx @vscode/vsce package --no-dependencies",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e:compile": "tsc -p tsconfig.e2e.json",
+    "test:e2e": "bun run test:e2e:compile && vscode-test",
+    "bench": "vitest bench --run"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.4.4",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^22",
     "@types/vscode": "^1.94.0",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/tree-sitter-wasm": "^0.3.0",
     "@vscode/vsce": "^3",
-    "esbuild": "^0.25",
-    "typescript": "~5.7",
-    "vitest": "^3.0.6"
+    "esbuild": "^0.27.3",
+    "mocha": "^11.7.5",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "dependencies": {
+    "web-tree-sitter": "^0.26.7"
   }
 }
