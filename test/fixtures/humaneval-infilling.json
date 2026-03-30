@@ -1,0 +1,142 @@
+[
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/0/1",
+    "entry_point": "has_close_elements",
+    "prefix": "\nfrom typing import List\n\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given list of numbers, are any two numbers closer to each other than\n    given threshold.\n    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)\n    False\n    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)\n    True\n    \"\"\"\n    for idx, elem in enumerate(numbers):\n        for idx2, elem2 in enumerate(numbers):",
+    "suffix": "\n                if distance < threshold:\n                    return True\n\n    return False\n\n",
+    "canonical_solution": "\n            if idx != idx2:\n                distance = abs(elem - elem2)"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/1/1",
+    "entry_point": "separate_paren_groups",
+    "prefix": "\nfrom typing import List\n\n\ndef separate_paren_groups(paren_string: str) -> List[str]:\n    \"\"\" Input to this function is a string containing multiple groups of nested parentheses. Your goal is to\n    separate those group into separate strings and return the list of those.\n    Separate groups are balanced (each open brace is properly closed) and not nested within each other\n    Ignore any spaces in the input string.\n    >>> separate_paren_groups('( ) (( )) (( )( ))')\n    ['()', '(())', '(()())']\n    \"\"\"\n",
+    "suffix": "\n        elif c == ')':\n            current_depth -= 1\n            current_string.append(c)\n\n            if current_depth == 0:\n                result.append(''.join(current_string))\n                current_string.clear()\n\n    return result\n",
+    "canonical_solution": "    result = []\n    current_string = []\n    current_depth = 0\n\n    for c in paren_string:\n        if c == '(':\n            current_depth += 1\n            current_string.append(c)"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/3/1",
+    "entry_point": "below_zero",
+    "prefix": "\nfrom typing import List\n\n\ndef below_zero(operations: List[int]) -> bool:\n    \"\"\" You're given a list of deposit and withdrawal operations on a bank account that starts with\n    zero balance. Your task is to detect if at any point the balance of account fallls below zero, and\n    at that point function should return True. Otherwise it should return False.\n    >>> below_zero([1, 2, 3])\n    False\n    >>> below_zero([1, 2, -4, 5])\n    True\n    \"\"\"\n    balance = 0\n\n    for op in o",
+    "suffix": "\n\n    return False\n",
+    "canonical_solution": "perations:\n        balance += op\n        if balance < 0:\n            return True"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/4/1",
+    "entry_point": "mean_absolute_deviation",
+    "prefix": "\nfrom typing import List\n\n\ndef mean_absolute_deviation(numbers: List[float]) -> float:\n    \"\"\" For a given list of input numbers, calculate Mean Absolute Deviation\n    around the mean of this dataset.\n    Mean Absolute Deviation is the average absolute difference between each\n    element and a centerpoint (mean in this case):\n    MAD = average | x - x_mean |\n    >>> mean_absolute_deviation([1.0, 2.0, 3.0, 4.0])\n    1.0\n    \"\"\"\n",
+    "suffix": "\n    return sum(abs(x - mean) for x in numbers) / len(numbers)\n",
+    "canonical_solution": "    mean = sum(numbers) / len(numbers)"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/5/1",
+    "entry_point": "intersperse",
+    "prefix": "\nfrom typing import List\n\n\ndef intersperse(numbers: List[int], delimeter: int) -> List[int]:\n    \"\"\" Insert a number 'delimeter' between every two consecutive elements of input list `numbers'\n    >>> intersperse([], 4)\n    []\n    >>> intersperse([1, 2, 3], 4)\n    [1, 4, 2, 4, 3]\n    \"\"\"\n    if not numbers:\n        return []\n\n    result = []\n\n    for n in numbers",
+    "suffix": "\n\n    result.append(numbers[-1])\n\n    return result\n",
+    "canonical_solution": "[:-1]:\n        result.append(n)\n        result.append(delimeter)"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/6/1",
+    "entry_point": "parse_nested_parens",
+    "prefix": "\nfrom typing import List\n\n\ndef parse_nested_parens(paren_string: str) -> List[int]:\n    \"\"\" Input to this function is a string represented multiple groups for nested parentheses separated by spaces.\n    For each of the group, output the deepest level of nesting of parentheses.\n    E.g. (()()) has maximum two levels of nesting while ((())) has three.\n\n    >>> parse_nested_parens('(()()) ((())) () ((())()())')\n    [2, 3, 1, 3]\n    \"\"\"\n",
+    "suffix": "\n    return [parse_paren_group(x) for x in paren_string.split(' ') if x]\n",
+    "canonical_solution": "    def parse_paren_group(s):\n        depth = 0\n        max_depth = 0\n        for c in s:\n            if c == '(':\n                depth += 1\n                max_depth = max(depth, max_depth)\n            else:\n                depth -= 1\n\n        return max_depth\n"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/8/1",
+    "entry_point": "sum_product",
+    "prefix": "\nfrom typing import List, Tuple\n\n\ndef sum_product(numbers: List[int]) -> Tuple[int, int]:\n    \"\"\" For a given list of integers, return a tuple consisting of a sum and a product of all the integers in a list.\n    Empty sum should be equal to 0 and empty product should be equal to 1.\n    >>> sum_product([])\n    (0, 1)\n    >>> sum_product([1, 2, 3, 4])\n    (10, 24)\n    \"\"\"\n",
+    "suffix": "\n    return sum_value, prod_value\n",
+    "canonical_solution": "    sum_value = 0\n    prod_value = 1\n\n    for n in numbers:\n        sum_value += n\n        prod_value *= n"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/9/1",
+    "entry_point": "rolling_max",
+    "prefix": "\nfrom typing import List, Tuple\n\n\ndef rolling_max(numbers: List[int]) -> List[int]:\n    \"\"\" From a given list of integers, generate a list of rolling maximum element found until given moment\n    in the sequence.\n    >>> rolling_max([1, 2, 3, 2, 3, 4, 2])\n    [1, 2, 3, 3, 3, 4, 4]\n    \"\"\"\n    running_max = None\n    result = []\n\n    for n in numbers:",
+    "suffix": "\n\n        result.append(running_max)\n\n    return result\n",
+    "canonical_solution": "\n        if running_max is None:\n            running_max = n\n        else:\n            running_max = max(running_max, n)"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/10/1",
+    "entry_point": "make_palindrome",
+    "prefix": "\n\n\ndef is_palindrome(string: str) -> bool:\n    \"\"\" Test if given string is a palindrome \"\"\"\n    return string == string[::-1]\n\n\ndef make_palindrome(string: str) -> str:\n    \"\"\" Find the shortest palindrome that begins with a supplied string.\n    Algorithm idea is simple:\n    - Find the longest postfix of supplied string that is a palindrome.\n    - Append to the end of the string reverse of a string prefix that comes before the palindromic suffix.\n    >>> make_palindrome('')\n    ''\n    >>> make_palindrome('cat')\n    'catac'\n    >>> make_palindrome('cata')\n    'catac'\n    \"\"\"\n    if not string:\n        return ''\n\n    beginning_of_suffix = 0\n\n    while not is_palindrome(string[beginning_of_suffix:]):\n        beginning_of_suffix += 1\n\n    return string + ",
+    "suffix": "\n",
+    "canonical_solution": "string[:beginning_of_suffix][::-1]"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/11/1",
+    "entry_point": "string_xor",
+    "prefix": "\nfrom typing import List\n\n\ndef string_xor(a: str, b: str) -> str:\n    \"\"\" Input are two strings a and b consisting only of 1s and 0s.\n    Perform binary XOR on these inputs and return result also as a string.\n    >>> string_xor('010', '110')\n    '100'\n    \"\"\"\n",
+    "suffix": "\n    return ''.join(xor(x, y) for x, y in zip(a, b))\n",
+    "canonical_solution": "    def xor(i, j):\n        if i == j:\n            return '0'\n        else:\n            return '1'"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/12/1",
+    "entry_point": "longest",
+    "prefix": "\nfrom typing import List, Optional\n\n\ndef longest(strings: List[str]) -> Optional[str]:\n    \"\"\" Out of list of strings, return the longest one. Return the first one in case of multiple\n    strings of the same length. Return None in case the input list is empty.\n    >>> longest([])\n\n    >>> longest(['a', 'b', 'c'])\n    'a'\n    >>> longest(['a', 'bb', 'ccc'])\n    'ccc'\n    \"\"\"\n    if not strings:\n        return None\n\n",
+    "suffix": "\n    for s in strings:\n        if len(s) == maxlen:\n            return s\n",
+    "canonical_solution": "    maxlen = max(len(x) for x in strings)"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/13/1",
+    "entry_point": "greatest_common_divisor",
+    "prefix": "\n\n\ndef greatest_common_divisor(a: int, b: int) -> int:\n    \"\"\" Return a greatest common divisor of two integers a and b\n    >>> greatest_common_divisor(3, 5)\n    1\n    >>> greatest_common_divisor(25, 15)\n    5\n    \"\"\"",
+    "suffix": "\n    return a\n",
+    "canonical_solution": "\n    while b:\n        a, b = b, a % b\n"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/14/1",
+    "entry_point": "all_prefixes",
+    "prefix": "\nfrom typing import List\n\n\ndef all_prefixes(string: str) -> List[str]:\n    \"\"\" Return list of all prefixes from shortest to longest of the input string\n    >>> all_prefixes('abc')\n    ['a', 'ab', 'abc']\n    \"\"\"\n    result = []\n",
+    "suffix": "\n    return result\n",
+    "canonical_solution": "\n    for i in range(len(string)):\n        result.append(string[:i+1])"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/17/1",
+    "entry_point": "parse_music",
+    "prefix": "\nfrom typing import List\n\n\ndef parse_music(music_string: str) -> List[int]:\n    \"\"\" Input to this function is a string representing musical notes in a special ASCII format.\n    Your task is to parse this string and return list of integers corresponding to how many beats does each\n    not last.\n\n    Here is a legend:\n    'o' - whole note, lasts four beats\n    'o|' - half note, lasts two beats\n    '.|' - quater note, lasts one beat\n\n    >>> parse_music('o o| .| o| o| .| .| .| .| o o')\n    [4, 2, 1, 2, 2, 1, 1, 1, 1, 4, 4]\n    \"\"\"\n",
+    "suffix": "\n    return [note_map[x] for x in music_string.split(' ') if x]\n",
+    "canonical_solution": "    note_map = {'o': 4, 'o|': 2, '.|': 1}"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/18/1",
+    "entry_point": "how_many_times",
+    "prefix": "\n\n\ndef how_many_times(string: str, substring: str) -> int:\n    \"\"\" Find how many times a given substring can be found in the original string. Count overlaping cases.\n    >>> how_many_times('', 'a')\n    0\n    >>> how_many_times('aaa', 'a')\n    3\n    >>> how_many_times('aaaa', 'aa')\n    3\n    \"\"\"\n    times = 0\n\n    for i in range(",
+    "suffix": "\n\n    return times\n",
+    "canonical_solution": "len(string) - len(substring) + 1):\n        if string[i:i+len(substring)] == substring:\n            times += 1"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/19/1",
+    "entry_point": "sort_numbers",
+    "prefix": "\nfrom typing import List\n\n\ndef sort_numbers(numbers: str) -> str:\n    \"\"\" Input is a space-delimited string of numberals from 'zero' to 'nine'.\n    Valid choices are 'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight' and 'nine'.\n    Return the string with numbers sorted from smallest to largest\n    >>> sort_numbers('three one five')\n    'one three five'\n    \"\"\"\n    value_map = {\n        'zero': 0,\n        'one': 1,\n        'two': 2,\n        'three': 3,\n        'four': 4,\n        'five': 5,\n        'six': 6,\n        'seven': 7,\n        'eight': 8,\n        'nine': 9\n    }\n    return ' '.join(sorted([x for x in numbers.split(' ') if x]",
+    "suffix": "))\n",
+    "canonical_solution": ", key=lambda x: value_map[x]"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/20/1",
+    "entry_point": "find_closest_elements",
+    "prefix": "\nfrom typing import List, Tuple\n\n\ndef find_closest_elements(numbers: List[float]) -> Tuple[float, float]:\n    \"\"\" From a supplied list of numbers (of length at least two) select and return two that are the closest to each\n    other and return them in order (smaller number, larger number).\n    >>> find_closest_elements([1.0, 2.0, 3.0, 4.0, 5.0, 2.2])\n    (2.0, 2.2)\n    >>> find_closest_elements([1.0, 2.0, 3.0, 4.0, 5.0, 2.0])\n    (2.0, 2.0)\n    \"\"\"\n    closest_pair = None\n    distance = None\n\n    for idx, elem in enumerate(numbers):\n        for idx2, elem2 in enumerate(numbers):",
+    "suffix": "\n\n    return closest_pair\n",
+    "canonical_solution": "\n            if idx != idx2:\n                if distance is None:\n                    distance = abs(elem - elem2)\n                    closest_pair = tuple(sorted([elem, elem2]))\n                else:\n                    new_distance = abs(elem - elem2)\n                    if new_distance < distance:\n                        distance = new_distance\n                        closest_pair = tuple(sorted([elem, elem2]))"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/21/1",
+    "entry_point": "rescale_to_unit",
+    "prefix": "\nfrom typing import List\n\n\ndef rescale_to_unit(numbers: List[float]) -> List[float]:\n    \"\"\" Given list of numbers (of at least two elements), apply a linear transform to that list,\n    such that the smallest number will become 0 and the largest will become 1\n    >>> rescale_to_unit([1.0, 2.0, 3.0, 4.0, 5.0])\n    [0.0, 0.25, 0.5, 0.75, 1.0]\n    \"\"\"\n    min_number = min(numbers)\n    max_number = max(numbers)\n    return [",
+    "suffix": " for x in numbers]\n",
+    "canonical_solution": "(x - min_number) / (max_number - min_number)"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/22/1",
+    "entry_point": "filter_integers",
+    "prefix": "\nfrom typing import List, Any\n\n\ndef filter_integers(values: List[Any]) -> List[int]:\n    \"\"\" Filter given list of any python values only for integers\n    >>> filter_integers(['a', 3.14, 5])\n    [5]\n    >>> filter_integers([1, 2, 3, 'abc', {}, []])\n    [1, 2, 3]\n    \"\"\"\n    return [x",
+    "suffix": "]\n",
+    "canonical_solution": " for x in values if isinstance(x, int)"
+  },
+  {
+    "task_id": "RandomSpanInfillingLight/HumanEval/24/1",
+    "entry_point": "largest_divisor",
+    "prefix": "\n\n\ndef largest_divisor(n: int) -> int:\n    \"\"\" For a given number n, find the largest number that divides n evenly, smaller than n\n    >>> largest_divisor(15)\n    5\n    \"\"\"\n    for i in r",
+    "suffix": "\n",
+    "canonical_solution": "eversed(range(n)):\n        if n % i == 0:\n            return i"
+  }
+]
