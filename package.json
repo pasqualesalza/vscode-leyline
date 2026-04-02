@@ -39,7 +39,7 @@
     "theme": "dark"
   },
   "engines": {
-    "vscode": "^1.94.0"
+    "vscode": "^1.110.0"
   },
   "extensionKind": [
     "ui"
