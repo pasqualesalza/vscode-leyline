@@ -1,5 +1,6 @@
 # Leyline: Code Anticipation
 
+[![CI](https://github.com/pasqualesalza/vscode-leyline/actions/workflows/ci.yml/badge.svg)](https://github.com/pasqualesalza/vscode-leyline/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Lightweight VS Code extension for inline code completion powered by AI.
