@@ -3,3 +3,12 @@ pre-commit:
     lint:
       glob: "*.{js,ts,json}"
       run: bunx biome check --staged --no-errors-on-unmatched {staged_files}
+
+pre-push:
+  commands:
+    check-types:
+      run: bun run check-types
+    compile:
+      run: bun run compile
+    test:
+      run: bun run test
