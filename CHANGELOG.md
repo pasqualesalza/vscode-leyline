@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-04-02
+
+### Changed
+
+- Upgrade to TypeScript 6.0.2.
+- Update dependencies: web-tree-sitter 0.26.8, Biome 2.4.10, esbuild 0.27.5,
+  Vitest 4.1.2, @types/vscode 1.110.0, @types/node 22.19.15.
+- Add pre-push hook (Lefthook) running type-check, compile, and tests locally
+  before pushing.
+- Add CI badge to README (repo is now public).
+
 ## [0.1.0] - 2026-03-30
 
 ### Added

@@ -2,7 +2,7 @@
   "name": "leyline",
   "displayName": "Leyline: Code Anticipation",
   "description": "Lightweight inline code completion using configurable AI endpoints",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "pasqualesalza",
   "license": "MIT",
   "repository": {
