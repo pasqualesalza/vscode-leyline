@@ -32,13 +32,17 @@ Bring your own API key or run models locally — works with
 
 ## Installation
 
-Download the `.vsix` from the
-[latest release](https://github.com/pasqualesalza/vscode-leyline/releases) and
-install:
+Download and install the latest release:
 
 ```bash
-code --install-extension leyline-0.1.0.vsix
+gh release download --repo pasqualesalza/vscode-leyline --pattern '*.vsix' --clobber -D /tmp && code --install-extension /tmp/leyline-*.vsix
 ```
+
+Or download manually from the
+[Releases page](https://github.com/pasqualesalza/vscode-leyline/releases) and
+run `code --install-extension <path-to-vsix>`.
+
+Run the same command to update — it always downloads the latest release.
 
 ## Getting Started
 
