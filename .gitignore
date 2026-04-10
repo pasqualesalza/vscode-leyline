@@ -8,6 +8,7 @@ coverage/
 .lefthook-local.yml
 PLAN.md
 .env
+.envrc
 .leyline-playground
 .claude/
 .vscode/settings.json
