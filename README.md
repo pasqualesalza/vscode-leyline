@@ -11,6 +11,8 @@ Bring your own API key or run models locally — works with
 ## Features
 
 - **Inline ghost text** — completions appear as you type, accept with `Tab`.
+- **Cross-file context** — includes types, functions, and signatures from open
+  files so the model understands your project, not just the current file.
 - **Smart multiline** — auto-detects function bodies, docstrings, and JSDoc to
   generate multi-line completions where it matters.
 - **Tab override** — `Tab` accepts completions without conflicting with
@@ -81,6 +83,8 @@ Settings (`Cmd+,`) and search for "leyline" to see all options grouped by:
 | `leyline.disableInFiles` | `[]` | Glob patterns to exclude (e.g., `"**/*.md"`) |
 | `leyline.multiline` | `"auto"` | `auto` / `always` / `never` |
 | `leyline.treeSitter` | `false` | Syntax validation via Tree-sitter |
+| `leyline.crossFileContext` | `true` | Include context from related open files |
+| `leyline.crossFileContextTokens` | `500` | Max tokens of cross-file context (0–2000) |
 | `leyline.cacheSize` | `50` | Cached completions (0 to disable) |
 | `leyline.debounceMs` | `300` | Typing debounce in ms |
 | `leyline.requestTimeout` | `30` | Request timeout in seconds |
