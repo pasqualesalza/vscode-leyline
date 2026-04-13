@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { LeylineCompletionProvider } from "./completion-provider.js";
 import * as config from "./config.js";
+import { trackRecentEdit } from "./context.js";
 import { initLog, log } from "./log.js";
 import { CodestralProvider } from "./providers/codestral.js";
 import { OllamaProvider } from "./providers/ollama.js";
@@ -226,10 +227,17 @@ export function activate(context: vscode.ExtensionContext): void {
     refreshStatusBar();
   });
 
+  const editTracker = vscode.workspace.onDidChangeTextDocument((e) => {
+    if (e.document.uri.scheme === "file") {
+      trackRecentEdit(e.document.uri);
+    }
+  });
+
   context.subscriptions.push(
     logChannel,
     statusBar,
     editorListener,
+    editTracker,
     completionRegistration,
     setApiKeyCmd,
     toggleCmd,

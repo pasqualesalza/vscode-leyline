@@ -36,6 +36,7 @@ import {
 } from "../src/prompt.js";
 import {
   charOverlapCases,
+  crossFileContextCases,
   lineOverlapCases,
   noOverlapCases,
 } from "./fixtures/fim-cases.js";
@@ -46,6 +47,7 @@ const allFimCases = [
   ...charOverlapCases,
   ...lineOverlapCases,
   ...noOverlapCases,
+  ...crossFileContextCases,
 ];
 
 describe.skipIf(!process.env.LEYLINE_TEST_FIM)(
@@ -120,6 +122,79 @@ describe.skipIf(!process.env.LEYLINE_TEST_FIM)(
           expect(stripDuplicateLines(trimmed, tc.suffix)).toBe(trimmed);
         });
       }
+    });
+
+    describe("Cross-file context A/B comparison (informational)", () => {
+      const crossFilePrefix = [
+        "// File: src/types.ts",
+        "export interface User { id: number; name: string; email: string; active: boolean; }",
+        "",
+        "// File: src/utils.ts",
+        "export function filterActive(users: User[]): User[] { return users.filter(u => u.active); }",
+        // biome-ignore lint/suspicious/noTemplateCurlyInString: testing template literal content
+        "export function formatUser(user: User): string { return `${user.name} <${user.email}>`; }",
+        "",
+      ].join("\n");
+
+      const localPrefix = [
+        'import { User } from "./types";',
+        'import { filterActive, formatUser } from "./utils";',
+        "",
+        "const users: User[] = [];",
+        "",
+        "function getFormattedActiveUsers(): string[] {",
+        "  return ",
+      ].join("\n");
+
+      const suffix = "\n}\n";
+
+      it("compares completion quality with and without cross-file context", async () => {
+        const provider = makeProvider();
+        const signal = new AbortController().signal;
+
+        const withoutContext = await provider.complete(
+          localPrefix,
+          suffix,
+          "typescript",
+          signal,
+        );
+
+        const withContext = await provider.complete(
+          crossFilePrefix + localPrefix,
+          suffix,
+          "typescript",
+          signal,
+        );
+
+        console.log(`[A/B] WITHOUT context: ${JSON.stringify(withoutContext)}`);
+        console.log(`[A/B] WITH    context: ${JSON.stringify(withContext)}`);
+
+        // Informational: check if context-aware completion references
+        // the imported functions (filterActive, formatUser)
+        const usesContext =
+          withContext?.includes("filterActive") ||
+          withContext?.includes("formatUser");
+        console.log(`[A/B] Uses cross-file context: ${usesContext}`);
+
+        // We only assert invariants, not content quality
+        if (withContext) {
+          const trimmed = postProcess(
+            withContext,
+            crossFilePrefix + localPrefix,
+            suffix,
+            "typescript",
+          );
+          expect(
+            postProcess(
+              trimmed,
+              crossFilePrefix + localPrefix,
+              suffix,
+              "typescript",
+            ),
+          ).toBe(trimmed);
+          expect(stripOverlap(trimmed, suffix)).toBe(trimmed);
+        }
+      });
     });
   },
 );
