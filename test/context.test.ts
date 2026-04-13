@@ -574,4 +574,114 @@ describe("collectCrossFileContext", () => {
 
     expect(result).toMatch(/^\/\/ File: src\/utils\.ts\n/);
   });
+
+  it("uses # comment for Python files", () => {
+    const currentDoc = makeDoc("/project/src/main.py", "python", "");
+    const otherDoc = makeDoc(
+      "/project/src/utils.py",
+      "python",
+      "def helper():\n    pass\n",
+    );
+
+    mockTextDocuments.push(currentDoc, otherDoc);
+
+    const result = collectCrossFileContext(
+      makeVscodeDoc("/project/src/main.py", "python", ""),
+      "import utils\nx = ",
+      500,
+    );
+
+    expect(result).toMatch(/^# File: src\/utils\.py\n/);
+    expect(result).not.toContain("// File:");
+  });
+
+  it("includes typescriptreact files for typescript docs", () => {
+    const currentDoc = makeDoc("/project/src/main.ts", "typescript", "");
+    const tsxDoc = makeDoc(
+      "/project/src/Button.tsx",
+      "typescriptreact",
+      "export function Button(): JSX.Element {}\n",
+    );
+
+    mockTextDocuments.push(currentDoc, tsxDoc);
+
+    const result = collectCrossFileContext(
+      makeVscodeDoc("/project/src/main.ts", "typescript", ""),
+      "const x = ",
+      500,
+    );
+
+    expect(result).toContain("Button.tsx");
+    expect(result).toContain("export function Button()");
+  });
+
+  it("skips large snippet but includes smaller ones", () => {
+    const currentDoc = makeDoc("/project/src/main.ts", "typescript", "");
+    const bigDoc = makeDoc(
+      "/project/src/big.ts",
+      "typescript",
+      Array.from(
+        { length: 100 },
+        (_, i) => `export function fn${i}(): void {}`,
+      ).join("\n"),
+    );
+    const smallDoc = makeDoc(
+      "/project/src/small.ts",
+      "typescript",
+      "export const VERSION = 1;\n",
+    );
+
+    mockTextDocuments.push(currentDoc, bigDoc, smallDoc);
+
+    // Budget too small for bigDoc but enough for smallDoc
+    const result = collectCrossFileContext(
+      makeVscodeDoc("/project/src/main.ts", "typescript", ""),
+      "const x = ",
+      15,
+    );
+
+    expect(result).toContain("small.ts");
+    expect(result).not.toContain("big.ts");
+  });
+
+  it("matches Java import by last segment", () => {
+    const currentDoc = makeDoc("/project/src/Main.java", "java", "");
+    const userDoc = makeDoc(
+      "/project/src/User.java",
+      "java",
+      "public class User {\n  public String name;\n}\n",
+    );
+
+    mockTextDocuments.push(currentDoc, userDoc);
+
+    const prefix = "import com.example.User;\n\nUser u = ";
+    const result = collectCrossFileContext(
+      makeVscodeDoc("/project/src/Main.java", "java", ""),
+      prefix,
+      500,
+    );
+
+    // User.java should be prioritized as imported
+    expect(result).toContain("User.java");
+  });
+
+  it("matches Rust use by last segment", () => {
+    const currentDoc = makeDoc("/project/src/main.rs", "rust", "");
+    const configDoc = makeDoc(
+      "/project/src/config.rs",
+      "rust",
+      "pub struct Config {\n  pub host: String,\n}\n",
+    );
+
+    mockTextDocuments.push(currentDoc, configDoc);
+
+    const prefix = "use crate::config::Config;\n\nlet c: Config = ";
+    const result = collectCrossFileContext(
+      makeVscodeDoc("/project/src/main.rs", "rust", ""),
+      prefix,
+      500,
+    );
+
+    expect(result).toContain("config.rs");
+  });
 });
