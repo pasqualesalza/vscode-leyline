@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2026-04-13
+
+### Added
+
+- **Cross-file context** — completions now include context from related open
+  files (imported types, recently edited code, open tabs in same language).
+  The model sees project structure and produces more context-aware suggestions.
+  Enabled by default. Settings: `leyline.crossFileContext` (boolean),
+  `leyline.crossFileContextTokens` (0–2000, default 500).
+- Cross-file playground (`playground/cross-file/`) with multi-file TypeScript
+  test scenario.
+- Import parsing for Java, Rust, and C/C++ languages.
+- Signature extraction for Java classes, Rust structs, C typedefs/includes.
+
 ## [0.1.1] - 2026-04-02
 
 ### Changed
