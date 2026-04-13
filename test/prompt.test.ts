@@ -11,6 +11,7 @@ import {
 } from "../src/prompt.js";
 import {
   charOverlapCases,
+  crossFileContextCases,
   lineOverlapCases,
   noOverlapCases,
 } from "./fixtures/fim-cases.js";
@@ -524,6 +525,18 @@ describe("postProcess", () => {
   for (const tc of noOverlapCases) {
     it(`no-op fixture: ${tc.name}`, () => {
       expect(postProcess(tc.llmOutput, "", tc.suffix)).toBe(tc.expected);
+    });
+  }
+
+  for (const tc of crossFileContextCases) {
+    it(`cross-file: ${tc.name}`, () => {
+      const result = postProcess(
+        tc.llmOutput,
+        tc.prefix,
+        tc.suffix,
+        tc.language,
+      );
+      expect(result).toBe(tc.expected);
     });
   }
 });

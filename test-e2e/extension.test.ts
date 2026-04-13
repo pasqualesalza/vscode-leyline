@@ -67,4 +67,44 @@ suite("Leyline Extension", () => {
     await vscode.commands.executeCommand("editor.action.inlineSuggest.trigger");
     await vscode.commands.executeCommand("workbench.action.closeAllEditors");
   });
+
+  test("cross-file context: open tabs are visible to the extension", async () => {
+    // Open two TypeScript files
+    const typesDoc = await vscode.workspace.openTextDocument({
+      content:
+        "export interface User { id: number; name: string; active: boolean; }\n",
+      language: "typescript",
+    });
+    const handlerDoc = await vscode.workspace.openTextDocument({
+      content:
+        'import { User } from "./types";\n\nconst users: User[] = [];\nconst active = \n',
+      language: "typescript",
+    });
+
+    await vscode.window.showTextDocument(typesDoc, vscode.ViewColumn.One);
+    await vscode.window.showTextDocument(handlerDoc, vscode.ViewColumn.Two);
+
+    // Verify both documents are in workspace.textDocuments
+    const openDocs = vscode.workspace.textDocuments;
+    const tsOpenDocs = openDocs.filter(
+      (d) => d.languageId === "typescript" && d.uri.scheme === "untitled",
+    );
+    assert.ok(
+      tsOpenDocs.length >= 2,
+      `Expected at least 2 open TS docs, got ${tsOpenDocs.length}`,
+    );
+
+    // Trigger completion on the handler doc — should not crash
+    await vscode.window.showTextDocument(handlerDoc);
+    await vscode.commands.executeCommand("editor.action.inlineSuggest.trigger");
+
+    // Clean up
+    await vscode.commands.executeCommand("workbench.action.closeAllEditors");
+  });
+
+  test("cross-file context: default config is enabled", () => {
+    const c = vscode.workspace.getConfiguration("leyline");
+    assert.strictEqual(c.get("crossFileContext"), true);
+    assert.strictEqual(c.get("crossFileContextTokens"), 500);
+  });
 });

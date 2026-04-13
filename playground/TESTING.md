@@ -101,3 +101,14 @@ Open a `.toml` or `.yaml` file and trigger.
 
 Check Output → "Leyline" for `Tree-sitter: rejected` or grammar download messages.
 Remove the setting after testing.
+
+### Cross-file context
+
+Open all three files in `cross-file/`: `types.ts`, `utils.ts`, `handler.ts`.
+
+In `handler.ts`, cursor inside `getProjectMembers()` body, press Enter.
+**Expected**: completion uses `User`, `Project` types and `getActiveUsers`/`formatUserName` functions from the other files.
+Check Output → "Leyline" for `Cross-file context: N files, ~M tokens`.
+
+Disable with `"leyline.crossFileContext": false` and retry.
+**Expected**: completion is less context-aware (doesn't reference types/functions from other files).

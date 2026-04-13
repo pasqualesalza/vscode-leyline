@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { onTruncation } from "./brackets.js";
 import { LruCache } from "./cache.js";
 import * as config from "./config.js";
+import { collectCrossFileContext } from "./context.js";
 import { log } from "./log.js";
 import { shouldMultiline } from "./multiline.js";
 import { extractContext, postProcess, stripLeadingIndent } from "./prompt.js";
@@ -94,12 +95,24 @@ export class LeylineCompletionProvider
 
           const offset = document.offsetAt(position);
           const text = document.getText();
-          const { prefix, suffix } = extractContext(
+          const { prefix: localPrefix, suffix } = extractContext(
             text,
             offset,
             config.prefixLines(),
             config.suffixLines(),
           );
+
+          let prefix = localPrefix;
+          if (config.crossFileContext()) {
+            const crossCtx = collectCrossFileContext(
+              document,
+              localPrefix,
+              config.crossFileContextTokens(),
+            );
+            if (crossCtx) {
+              prefix = `${crossCtx}\n\n${localPrefix}`;
+            }
+          }
 
           const multiline = shouldMultiline(prefix, document.languageId);
           const stopOverride = multiline ? [] : undefined;

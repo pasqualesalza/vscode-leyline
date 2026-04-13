@@ -93,3 +93,11 @@ export function cacheSize(): number {
 export function treeSitter(): boolean {
   return cfg().get<boolean>("treeSitter", false);
 }
+
+export function crossFileContext(): boolean {
+  return cfg().get<boolean>("crossFileContext", true);
+}
+
+export function crossFileContextTokens(): number {
+  return clamp(cfg().get<number>("crossFileContextTokens", 500), 0, 2000);
+}

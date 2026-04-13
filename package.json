@@ -211,6 +211,18 @@
             "minimum": 0,
             "maximum": 500,
             "description": "Number of recent completions kept in memory. Cached completions appear instantly when you undo and retype. Set to 0 to disable."
+          },
+          "leyline.crossFileContext": {
+            "type": "boolean",
+            "default": true,
+            "markdownDescription": "Include context from related open files in completion prompts. The model sees imports, type definitions, and recently edited code from other files, producing more project-aware suggestions."
+          },
+          "leyline.crossFileContextTokens": {
+            "type": "number",
+            "default": 500,
+            "minimum": 0,
+            "maximum": 2000,
+            "description": "Maximum tokens of cross-file context to include. Higher values give the model more context but increase request size."
           }
         }
       },
