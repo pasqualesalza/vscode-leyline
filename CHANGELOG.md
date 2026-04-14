@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.2.0] - 2026-04-13
+## [0.3.0] - 2026-04-13 (Pre-release)
 
 ### Added
 
@@ -18,6 +18,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   test scenario.
 - Import parsing for Java, Rust, and C/C++ languages.
 - Signature extraction for Java classes, Rust structs, C typedefs/includes.
+
+### Fixed
+
+- Language-specific comment headers (`#` for Python, `//` for others).
+- Token budget skips large snippets and tries smaller ones.
+- Import-to-file matching by last segment for Java, Rust, Go, Python.
+- TS/TSX and JS/JSX treated as compatible languages for context sharing.
+
+## [0.2.0] - 2026-04-13
+
+### Changed
+
+- Adopt even/odd minor version convention for stable/pre-release releases.
+- Release workflow detects pre-release from odd minor version number.
 
 ## [0.1.1] - 2026-04-02
 
