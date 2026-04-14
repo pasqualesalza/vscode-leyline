@@ -92,9 +92,29 @@ export function parseImports(prefix: string, languageId: string): Set<string> {
  */
 function matchesImport(docUri: vscode.Uri, importPaths: Set<string>): boolean {
   const docPath = docUri.fsPath;
+  // Also check just the filename without extension for fuzzy matching
+  const docBasename =
+    docPath
+      .split("/")
+      .pop()
+      ?.replace(/\.\w+$/, "") ?? "";
+
   for (const imp of importPaths) {
+    // Strip leading ./ and file extension
     const normalized = imp.replace(/^\.\//, "").replace(/\.\w+$/, "");
-    if (docPath.includes(normalized)) return true;
+
+    // Direct path substring match (works for TS/JS relative imports)
+    if (normalized && docPath.includes(normalized)) return true;
+
+    // Last segment match: "com.example.User" → "User", "crate::types::Config" → "Config"
+    const lastSegment = normalized.split(/[.:/]/).pop() ?? "";
+    if (
+      lastSegment &&
+      lastSegment.length > 1 &&
+      docBasename.toLowerCase() === lastSegment.toLowerCase()
+    ) {
+      return true;
+    }
   }
   return false;
 }
@@ -114,6 +134,20 @@ export function trackRecentEdit(uri: vscode.Uri): void {
 function isRecentlyEdited(uri: vscode.Uri): boolean {
   const ts = recentEdits.get(uri.toString());
   return ts !== undefined && Date.now() - ts < RECENT_EDIT_TTL_MS;
+}
+
+const LANGUAGE_GROUPS: Record<string, string> = {
+  typescript: "ts",
+  typescriptreact: "ts",
+  javascript: "js",
+  javascriptreact: "js",
+};
+
+function isCompatibleLanguage(a: string, b: string): boolean {
+  if (a === b) return true;
+  const groupA = LANGUAGE_GROUPS[a];
+  const groupB = LANGUAGE_GROUPS[b];
+  return groupA !== undefined && groupA === groupB;
 }
 
 /**
@@ -140,7 +174,7 @@ export function collectCrossFileContext(
     if (doc.uri.toString() === currentUri) continue;
     if (doc.uri.scheme !== "file") continue;
     if (doc.isUntitled) continue;
-    if (doc.languageId !== languageId) continue;
+    if (!isCompatibleLanguage(doc.languageId, languageId)) continue;
 
     const isImported = matchesImport(doc.uri, importPaths);
     const isRecent = isRecentlyEdited(doc.uri);
@@ -165,10 +199,15 @@ export function collectCrossFileContext(
   const parts: string[] = [];
   let usedTokens = 0;
 
+  const commentPrefix = languageId === "python" ? "#" : "//";
+
   for (const snippet of snippets) {
-    const formatted = `// File: ${snippet.path}\n${snippet.content}`;
+    const formatted = `${commentPrefix} File: ${snippet.path}\n${snippet.content}`;
     const tokens = estimateTokens(formatted);
-    if (usedTokens + tokens > maxTokens) break;
+    if (usedTokens + tokens > maxTokens) {
+      // Skip large snippet but try smaller ones
+      continue;
+    }
     parts.push(formatted);
     usedTokens += tokens;
   }

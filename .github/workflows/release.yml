@@ -23,18 +23,23 @@ jobs:
 
       - name: Detect pre-release
         id: meta
+        env:
+          TAG: ${{ github.ref_name }}
         run: |
-          TAG="${{ github.ref_name }}"
-          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
-            echo "::error::Tag '$TAG' does not match semver format vMAJOR.MINOR.PATCH"
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Tag '$TAG' does not match format vMAJOR.MINOR.PATCH"
             exit 1
           fi
-          if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-.+ ]]; then
+          # VS Code Marketplace convention: odd minor = pre-release, even minor = stable
+          MINOR=$(echo "$TAG" | sed 's/v[0-9]*\.\([0-9]*\)\..*/\1/')
+          if (( MINOR % 2 == 1 )); then
             echo "prerelease=true" >> "$GITHUB_OUTPUT"
             echo "vsce_flag=--pre-release" >> "$GITHUB_OUTPUT"
+            echo "Pre-release detected (odd minor: $MINOR)"
           else
             echo "prerelease=false" >> "$GITHUB_OUTPUT"
             echo "vsce_flag=" >> "$GITHUB_OUTPUT"
+            echo "Stable release detected (even minor: $MINOR)"
           fi
 
       - name: Extract release notes

@@ -125,13 +125,22 @@ Press **F5** in VS Code to launch the Extension Development Host.
 
 ## Releasing
 
-Releases are automated via GitHub Actions on tag push:
+Releases follow the
+[VS Code even/odd minor version convention](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#prerelease-extensions):
+
+- **Even minor** (`0.2.0`, `0.4.0`) → stable release
+- **Odd minor** (`0.3.0`, `0.5.0`) → pre-release
+
+The release workflow detects the minor version automatically and passes
+`--pre-release` to `vsce` when odd.
 
 ```bash
-git tag v0.1.0 && git push origin v0.1.0
-```
+# Stable release
+git tag v0.2.0 && git push origin v0.2.0
 
-Tags with a suffix (e.g., `-beta.1`) are packaged with `--pre-release`.
+# Pre-release
+git tag v0.3.0 && git push origin v0.3.0
+```
 
 ## Contributing
 
