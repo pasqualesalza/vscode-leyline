@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2026-04-13
+
+### Changed
+
+- Adopt even/odd minor version convention for stable/pre-release releases.
+- Release workflow detects pre-release from odd minor version number instead
+  of tag suffix.
+
 ## [0.1.1] - 2026-04-02
 
 ### Changed
