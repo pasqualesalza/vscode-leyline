@@ -15,21 +15,32 @@ jobs:
       - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
-      - run: bun run check-types
-      - run: bun run compile
-      - run: bun run lint
-      - run: bun run test
-      - run: xvfb-run -a bun run test:e2e
+
+      - name: Validate release
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          # Validate tag format
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Tag '$TAG' does not match format vMAJOR.MINOR.PATCH"
+            exit 1
+          fi
+
+          # Extract version from tag and package.json
+          TAG_VERSION="${TAG#v}"
+          PKG_VERSION=$(node -p "require('./package.json').version")
+
+          # Validate tag matches package.json
+          if [[ "$TAG_VERSION" != "$PKG_VERSION" ]]; then
+            echo "::error::Tag version ($TAG_VERSION) does not match package.json ($PKG_VERSION)"
+            exit 1
+          fi
 
       - name: Detect pre-release
         id: meta
         env:
           TAG: ${{ github.ref_name }}
         run: |
-          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::Tag '$TAG' does not match format vMAJOR.MINOR.PATCH"
-            exit 1
-          fi
           # VS Code Marketplace convention: odd minor = pre-release, even minor = stable
           MINOR=$(echo "$TAG" | sed 's/v[0-9]*\.\([0-9]*\)\..*/\1/')
           if (( MINOR % 2 == 1 )); then
@@ -41,6 +52,12 @@ jobs:
             echo "vsce_flag=" >> "$GITHUB_OUTPUT"
             echo "Stable release detected (even minor: $MINOR)"
           fi
+
+      - run: bun run check-types
+      - run: bun run compile
+      - run: bun run lint
+      - run: bun run test
+      - run: xvfb-run -a bun run test:e2e
 
       - name: Extract release notes
         id: release-notes
