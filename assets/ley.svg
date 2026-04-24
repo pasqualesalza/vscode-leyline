@@ -1,5 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <!-- Outline triangle + nexus dot via evenodd:
+       outer fills, inner cuts, nexus refills -->
   <path fill-rule="evenodd" fill="#000"
-    d="M8 0.5 L15.5 15.5 L0.5 15.5 Z
-       M8 10.3 m-1.8 0 a1.8 1.8 0 1 0 3.6 0 a1.8 1.8 0 1 0 -3.6 0 Z"/>
+    d="M8 1 L15 15 L1 15 Z
+       M8 3.5 L13 14 L3 14 Z
+       M8 10.3 m-1.4 0 a1.4 1.4 0 1 0 2.8 0 a1.4 1.8 0 1 0 -2.8 0 Z"/>
 </svg>
