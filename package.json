@@ -112,7 +112,7 @@
         "id": "leyline.gettingStarted",
         "title": "Get started with Leyline",
         "description": "Set up AI inline completions in a few steps.",
-        "icon": "assets/walkthrough-icon.png",
+        "icon": "assets/icon.svg",
         "steps": [
           {
             "id": "selectProvider",

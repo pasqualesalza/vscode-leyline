@@ -7,7 +7,6 @@
 #
 # Generated outputs:
 #   icon.png                    — 256x256 marketplace icon (PNG)
-#   assets/walkthrough-icon.png — 64x64 walkthrough thumbnail (PNG)
 #   assets/leyline.woff         — font used by the VS Code status bar icon
 #   assets/leyline.json         — glyph codepoint map (generated)
 #
@@ -41,9 +40,6 @@ echo "✓  Dependencies OK"
 rsvg-convert -w 256 -h 256 "$ASSETS/icon.svg" -o "$REPO_ROOT/icon.png"
 echo "✓  icon.png (256x256)"
 
-rsvg-convert -w 64 -h 64 "$ASSETS/icon.svg" -o "$ASSETS/walkthrough-icon.png"
-echo "✓  assets/walkthrough-icon.png (64x64)"
-
 # ── 2. assets/leyline.woff + assets/leyline.json ─────────────────────────────
 # fantasticon reads top-level SVGs in assets/ only (glyph.svg + icon.svg).
 # assets/src/ is excluded intentionally — source files must not enter the font.
@@ -66,6 +62,5 @@ echo "Done. File map:"
 echo "  assets/icon.svg             ← edit to change the icon design"
 echo "  assets/glyph.svg            ← edit to change the status bar glyph"
 echo "  icon.png                    → marketplace icon (256x256)"
-echo "  assets/walkthrough-icon.png → walkthrough thumbnail (64x64)"
 echo "  assets/leyline.woff         → status bar icon font"
 echo "  assets/leyline.json         → glyph codepoint map"
