@@ -1,16 +1,19 @@
 #!/usr/bin/env bash
 # generate-icons.sh — Regenerate all Leyline icon assets from source SVGs.
 #
-# Source files (design/ — edit these to change the icon):
-#   design/icon-source.svg    — canonical triangle, white, transparent bg
-#   design/icon-theme.svg     — theme-aware variant (CSS vars) for future use
+# Folder convention:
+#   assets/src/   ← source design files (excluded from VSIX via .vscodeignore)
+#   assets/       ← generated files (included in VSIX)
 #
-# Generated outputs (assets/ + root):
-#   assets/icon.svg           — composed SVG (background + triangle) → icon.png
-#   icon.png                  — 256x256 marketplace icon (PNG, dark background)
-#   assets/glyph.svg          — 16x16 monochrome font glyph input for WOFF
-#   assets/leyline.woff       — font used by the VS Code status bar icon
-#   assets/leyline.json       — glyph codepoint map (generated)
+# Source files:
+#   assets/src/icon-source.svg  — canonical triangle geometry, transparent bg
+#
+# Generated outputs:
+#   assets/icon.svg             — composed SVG (background + triangle)
+#   icon.png                    — 256x256 marketplace icon (PNG, dark background)
+#   assets/glyph.svg            — 16x16 monochrome font glyph
+#   assets/leyline.woff         — font used by the VS Code status bar icon
+#   assets/leyline.json         — glyph codepoint map (generated)
 #
 # Requirements:
 #   rsvg-convert  — brew install librsvg
@@ -37,17 +40,18 @@ check_cmd bun          "https://bun.sh"
 echo "✓  Dependencies OK"
 
 # ── 1. assets/icon.svg + icon.png (marketplace icon) ─────────────────────────
-# Compose dark background + white triangle, export as 256x256 PNG.
+# Compose dark background + white triangle + ghost point, export as 256x256 PNG.
 
 cat > "$ASSETS/icon.svg" << 'EOF'
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
   <rect width="256" height="256" rx="52" fill="#0d0d1f"/>
-  <line x1="128" y1="40" x2="48" y2="208" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
-  <line x1="128" y1="40" x2="208" y2="208" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
-  <line x1="48" y1="208" x2="208" y2="208" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
-  <circle cx="128" cy="150" r="16" fill="#ffffff"/>
-  <circle cx="48" cy="208" r="20" fill="#ffffff"/>
-  <circle cx="208" cy="208" r="20" fill="#ffffff"/>
+  <line x1="128" y1="44" x2="52" y2="200" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <line x1="128" y1="44" x2="204" y2="200" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <line x1="52" y1="200" x2="204" y2="200" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="128" cy="148" r="14" fill="#ffffff"/>
+  <circle cx="52" cy="200" r="18" fill="#ffffff"/>
+  <circle cx="204" cy="200" r="18" fill="#ffffff"/>
+  <circle cx="128" cy="44" r="18" fill="none" stroke="#ffffff" stroke-width="8" opacity="0.5"/>
 </svg>
 EOF
 
@@ -56,7 +60,7 @@ echo "✓  icon.png (256x256 PNG)"
 
 # ── 2. assets/glyph.svg (status bar font glyph) ──────────────────────────────
 # 16x16 monochrome outline triangle + nexus dot.
-# Winding direction (nonzero rule) — do NOT use fill-rule=evenodd, it breaks WOFF.
+# Winding direction (nonzero rule) — do NOT use fill-rule=evenodd (breaks WOFF).
 # Outer path CW + inner path CCW = hollow triangle outline.
 # Nexus circle with sweep-flag=1 (CW) = dot refills inside the hollow.
 
@@ -73,7 +77,7 @@ echo "✓  assets/glyph.svg (16x16 monochrome)"
 
 # ── 3. assets/leyline.woff + assets/leyline.json ─────────────────────────────
 # fantasticon reads top-level SVGs in assets/ only (glyph.svg + icon.svg).
-# design/ is kept outside intentionally — its SVGs must not enter the font.
+# assets/src/ is excluded intentionally — source files must not enter the font.
 
 cd "$REPO_ROOT"
 bunx fantasticon assets \
@@ -90,10 +94,9 @@ echo "✓  assets/leyline.woff + assets/leyline.json"
 
 echo ""
 echo "Done. File map:"
-echo "  design/icon-source.svg  ← edit to change the icon geometry"
-echo "  design/icon-theme.svg   ← theme-aware variant (future use)"
-echo "  assets/icon.svg         → composed SVG (bg + triangle)"
-echo "  icon.png                → marketplace icon (256x256)"
-echo "  assets/glyph.svg        → font glyph source (16x16)"
-echo "  assets/leyline.woff     → status bar icon font"
-echo "  assets/leyline.json     → glyph codepoint map"
+echo "  assets/src/icon-source.svg  ← edit to change the icon geometry (excluded from VSIX)"
+echo "  assets/icon.svg             → composed SVG (background + triangle)"
+echo "  icon.png                    → marketplace icon (256x256)"
+echo "  assets/glyph.svg            → font glyph source (16x16)"
+echo "  assets/leyline.woff         → status bar icon font"
+echo "  assets/leyline.json         → glyph codepoint map"
