@@ -73,7 +73,7 @@
   ],
   "contributes": {
     "icons": {
-      "leyline-ley": {
+      "leyline": {
         "description": "Leyline icon",
         "default": {
           "fontPath": "assets/leyline.woff",
