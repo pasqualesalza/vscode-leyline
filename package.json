@@ -77,7 +77,7 @@
         "description": "Leyline icon",
         "default": {
           "fontPath": "assets/leyline.woff",
-          "fontCharacter": "\\f101"
+          "fontCharacter": "\\f102"
         }
       }
     },

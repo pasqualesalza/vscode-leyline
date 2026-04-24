@@ -13,7 +13,7 @@ out/**
 !dist/**/*.wasm
 **/*.map
 **/*.svg
-!design/ley-triangle-theme.svg
+!design/icon-theme.svg
 assets/*.json
 tsconfig.json
 tsconfig.e2e.json
