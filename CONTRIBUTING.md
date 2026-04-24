@@ -27,26 +27,29 @@ Use a conventional prefix:
 Releases are automated via GitHub Actions on tag push. Only maintainers create
 tags.
 
-### Stable Release
+This project follows the
+[VS Code even/odd minor version convention](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#prerelease-extensions):
+
+- **Even minor** (`0.2.0`, `0.4.0`) → stable release
+- **Odd minor** (`0.3.0`, `0.5.0`) → pre-release
+
+The release workflow detects the minor version automatically and passes
+`--pre-release` to `vsce` when odd. Tags must be plain `vMAJOR.MINOR.PATCH`
+with no suffix — the version in `package.json` must match the tag exactly.
+
+### Stable release
 
 ```bash
-git tag v0.2.0 && git push origin v0.2.0
+# Bump package.json version to next even minor, then:
+git tag v0.4.0 && git push origin v0.4.0
 ```
 
 ### Pre-release
 
 ```bash
-git tag v0.3.0-beta.1 && git push origin v0.3.0-beta.1
+# Bump package.json version to next odd minor, then:
+git tag v0.5.0 && git push origin v0.5.0
 ```
-
-Tags with a suffix (e.g., `-beta.1`, `-rc.1`) are packaged with the
-`--pre-release` flag and marked as pre-release on GitHub.
-
-> **Note:** The VS Code Marketplace requires `version` in `package.json` to be
-> plain `MAJOR.MINOR.PATCH` — no semver pre-release tags. The git tag suffix is
-> used only as a workflow signal. By convention, even minor versions (e.g.,
-> `0.2.x`) denote stable releases and odd minor versions (e.g., `0.3.x`) denote
-> pre-releases.
 
 ## Getting Started
 
@@ -86,6 +89,9 @@ bun run package     # Build VSIX package
 Press **F5** in VS Code to launch the Extension Development Host with the
 extension loaded. The status bar should show "Leyline" and you can test inline
 completions with a configured API endpoint and key.
+
+The `playground/` directory contains sample files for manual QA. See
+[`playground/TESTING.md`](playground/TESTING.md) for the testing guide.
 
 ## Code Style
 
