@@ -2,7 +2,7 @@
 
 Verify that Leyline can reach your endpoint before writing any code.
 
-[$(beaker) Test Connection](command:leyline.testConnection)
+[Test Connection](command:leyline.testConnection)
 
 If the test succeeds, you're ready. Open any source file and start typing — ghost text completions appear after ~300 ms.
 
