@@ -8,3 +8,7 @@ export interface CompletionProvider {
     stopOverride?: string[],
   ): Promise<string | null>;
 }
+
+export function providerRequiresApiKey(name: string): boolean {
+  return name === "codestral";
+}

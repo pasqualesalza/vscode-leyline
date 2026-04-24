@@ -23,6 +23,17 @@ vi.mock("vscode", () => ({
       }
       return undefined;
     },
+    asRelativePath: (uri: { fsPath: string }, _includeWorkspace?: boolean) => {
+      // POSIX workspace
+      if (uri.fsPath.startsWith("/project/")) {
+        return uri.fsPath.slice("/project/".length);
+      }
+      // Windows workspace
+      if (uri.fsPath.startsWith("C:\\project\\")) {
+        return uri.fsPath.slice("C:\\project\\".length);
+      }
+      return uri.fsPath;
+    },
   },
   languages: {
     match: () => 0,
@@ -683,5 +694,79 @@ describe("collectCrossFileContext", () => {
     );
 
     expect(result).toContain("config.rs");
+  });
+
+  describe("Windows path handling", () => {
+    function makeWinDoc(
+      winPath: string,
+      languageId: string,
+      content: string,
+    ): (typeof mockTextDocuments)[0] {
+      return {
+        uri: {
+          toString: () => `file:///${winPath.replace(/\\/g, "/")}`,
+          fsPath: winPath,
+          scheme: "file",
+        },
+        languageId,
+        isUntitled: false,
+        getText: () => content,
+      };
+    }
+
+    it("renders file path with forward slashes on Windows paths", () => {
+      const currentDoc = makeWinDoc(
+        "C:\\project\\src\\main.ts",
+        "typescript",
+        "const x = 1;",
+      );
+      const otherDoc = makeWinDoc(
+        "C:\\project\\src\\types.ts",
+        "typescript",
+        "export interface User { id: number; }\n",
+      );
+
+      mockTextDocuments.push(currentDoc, otherDoc);
+
+      const result = collectCrossFileContext(
+        {
+          uri: currentDoc.uri as unknown as import("vscode").Uri,
+          languageId: "typescript",
+        } as import("vscode").TextDocument,
+        "const x = ",
+        500,
+      );
+
+      expect(result).toContain("// File: src/types.ts");
+      expect(result).not.toContain("\\");
+    });
+
+    it("matches Windows import paths via forward-slash normalization", () => {
+      const currentDoc = makeWinDoc(
+        "C:\\project\\src\\main.ts",
+        "typescript",
+        "",
+      );
+      const typesDoc = makeWinDoc(
+        "C:\\project\\src\\types.ts",
+        "typescript",
+        "export interface User { id: number; }\n",
+      );
+
+      mockTextDocuments.push(currentDoc, typesDoc);
+
+      const prefix = 'import { User } from "./types";\n\nconst u: User = ';
+      const result = collectCrossFileContext(
+        {
+          uri: currentDoc.uri as unknown as import("vscode").Uri,
+          languageId: "typescript",
+        } as import("vscode").TextDocument,
+        prefix,
+        500,
+      );
+
+      // types.ts should be included and matched as imported
+      expect(result).toContain("types.ts");
+    });
   });
 });

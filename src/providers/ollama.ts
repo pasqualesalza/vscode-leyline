@@ -1,3 +1,4 @@
+import { log } from "../log.js";
 import type { ProviderConfig } from "../types.js";
 import type { CompletionProvider } from "./provider.js";
 
@@ -57,9 +58,15 @@ export class OllamaProvider implements CompletionProvider {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Ollama API error: ${response.status} ${response.statusText}`,
-      );
+      const text = await response.text().catch(() => "");
+      let detail = text.slice(0, 200) || response.statusText;
+      try {
+        const parsed = JSON.parse(text) as { error?: string };
+        if (typeof parsed.error === "string") detail = parsed.error;
+      } catch {}
+      const msg = `Ollama API error (${response.status}): ${detail}`;
+      log()?.warn(msg);
+      throw new Error(msg);
     }
 
     return readJSONL(response, signal);

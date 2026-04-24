@@ -68,5 +68,19 @@ export function updateStatusBar(
       );
       break;
     }
+    case "unconfigured": {
+      statusBarItem.text = "$(warning) Leyline";
+      const tip = new vscode.MarkdownString(
+        lastProviderName
+          ? `Leyline: No API key set for **${lastProviderName}** — click to open menu`
+          : "Leyline: No API key set — click to open menu",
+      );
+      tip.isTrusted = true;
+      statusBarItem.tooltip = tip;
+      statusBarItem.backgroundColor = new vscode.ThemeColor(
+        "statusBarItem.warningBackground",
+      );
+      break;
+    }
   }
 }

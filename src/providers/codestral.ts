@@ -1,3 +1,4 @@
+import { log } from "../log.js";
 import type { ProviderConfig } from "../types.js";
 import type { CompletionProvider } from "./provider.js";
 
@@ -52,9 +53,21 @@ export class CodestralProvider implements CompletionProvider {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Codestral API error: ${response.status} ${response.statusText}`,
-      );
+      const text = await response.text().catch(() => "");
+      let detail = text.slice(0, 200) || response.statusText;
+      try {
+        const parsed = JSON.parse(text) as {
+          message?: string;
+          error?: { message?: string } | string;
+        };
+        if (typeof parsed.message === "string") detail = parsed.message;
+        else if (typeof parsed.error === "string") detail = parsed.error;
+        else if (typeof parsed.error?.message === "string")
+          detail = parsed.error.message;
+      } catch {}
+      const msg = `Codestral API error (${response.status}): ${detail}`;
+      log()?.warn(msg);
+      throw new Error(msg);
     }
 
     return readSSE(response, signal);
