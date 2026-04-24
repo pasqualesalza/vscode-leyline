@@ -208,6 +208,100 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.executeCommand("editor.action.inlineSuggest.trigger");
   });
 
+  const testConnectionCmd = vscode.commands.registerCommand(
+    "leyline.testConnection",
+    async () => {
+      const providerName = config.provider();
+      const providerCfg = config.providerConfig(providerName);
+
+      await vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Notification,
+          title: `Leyline: Testing connection to ${providerName}…`,
+          cancellable: false,
+        },
+        async () => {
+          try {
+            const headers: Record<string, string> = {
+              "Content-Type": "application/json",
+            };
+
+            let url: string;
+            let body: object;
+
+            if (providerName === "codestral") {
+              const apiKey = await getApiKey(providerName);
+              if (!apiKey) {
+                vscode.window
+                  .showWarningMessage(
+                    "Leyline: No API key set for Codestral.",
+                    "Set API Key",
+                  )
+                  .then((choice) => {
+                    if (choice)
+                      vscode.commands.executeCommand("leyline.setApiKey");
+                  });
+                return;
+              }
+              headers.Authorization = `Bearer ${apiKey}`;
+              url = `${providerCfg.endpoint.replace(/\/+$/, "")}/v1/fim/completions`;
+              body = {
+                model: providerCfg.model,
+                prompt: "f",
+                suffix: "",
+                max_tokens: 1,
+                stream: false,
+              };
+            } else {
+              const apiKey = await getApiKey(providerName);
+              if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
+              url = `${providerCfg.endpoint.replace(/\/+$/, "")}/api/generate`;
+              body = { model: providerCfg.model, prompt: "f", stream: false };
+            }
+
+            const signal = AbortSignal.timeout(10_000);
+            const response = await fetch(url, {
+              method: "POST",
+              headers,
+              body: JSON.stringify(body),
+              signal,
+            });
+
+            if (response.ok) {
+              const ep = providerCfg.endpoint;
+              vscode.window.showInformationMessage(
+                `$(check) Leyline: Connection successful — ${providerName} at ${ep}`,
+              );
+              log()?.info(`Test connection OK: provider=${providerName}`);
+            } else {
+              const text = await response.text().catch(() => "");
+              let detail = text.slice(0, 200) || response.statusText;
+              try {
+                const parsed = JSON.parse(text) as {
+                  message?: string;
+                  error?: string;
+                };
+                if (typeof parsed.message === "string") detail = parsed.message;
+                else if (typeof parsed.error === "string")
+                  detail = parsed.error;
+              } catch {}
+              const msg = `${providerName} returned ${response.status}: ${detail}`;
+              log()?.warn(`Test connection failed: ${msg}`);
+              vscode.window.showErrorMessage(`$(error) Leyline: ${msg}`);
+            }
+          } catch (err: unknown) {
+            const msg =
+              err instanceof Error ? err.message : "Connection failed";
+            log()?.warn(`Test connection error: ${msg}`);
+            vscode.window.showErrorMessage(
+              `$(error) Leyline: Cannot reach ${config.provider()} endpoint — ${msg}`,
+            );
+          }
+        },
+      );
+    },
+  );
+
   const configListener = vscode.workspace.onDidChangeConfiguration((e) => {
     if (e.affectsConfiguration("leyline")) {
       completionProvider.cancel();
@@ -280,6 +374,7 @@ export function activate(context: vscode.ExtensionContext): void {
     selectProviderCmd,
     showMenuCmd,
     triggerCmd,
+    testConnectionCmd,
     configListener,
     { dispose: () => tsValidator?.dispose() },
     { dispose: () => completionProvider.dispose() },
