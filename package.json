@@ -35,7 +35,7 @@
   "qna": "https://github.com/pasqualesalza/vscode-leyline/issues/new/choose",
   "icon": "icon.png",
   "galleryBanner": {
-    "color": "#1e1e1e",
+    "color": "#0d0d1f",
     "theme": "dark"
   },
   "engines": {
