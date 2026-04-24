@@ -22,6 +22,7 @@ suite("Leyline Extension", () => {
       "leyline.setApiKey",
       "leyline.selectProvider",
       "leyline.showMenu",
+      "leyline.testConnection",
     ]) {
       assert.ok(commands.includes(cmd), `Missing command: ${cmd}`);
     }

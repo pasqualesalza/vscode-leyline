@@ -101,6 +101,52 @@
       {
         "command": "leyline.trigger",
         "title": "Leyline: Trigger Inline Completion"
+      },
+      {
+        "command": "leyline.testConnection",
+        "title": "Leyline: Test Connection"
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "leyline.gettingStarted",
+        "title": "Get started with Leyline",
+        "description": "Set up AI inline completions in a few steps.",
+        "steps": [
+          {
+            "id": "selectProvider",
+            "title": "Choose a provider",
+            "description": "Pick Codestral (cloud) or Ollama (local).\n[Select Provider](command:leyline.selectProvider)",
+            "media": {
+              "markdown": "walkthroughs/step-provider.md"
+            },
+            "completionEvents": [
+              "onSettingChanged:leyline.provider"
+            ]
+          },
+          {
+            "id": "configure",
+            "title": "Configure",
+            "description": "Set your API key (Codestral) or start Ollama with a FIM model.",
+            "media": {
+              "markdown": "walkthroughs/step-configure.md"
+            },
+            "completionEvents": [
+              "onCommand:leyline.setApiKey"
+            ]
+          },
+          {
+            "id": "testConnection",
+            "title": "Test and start typing",
+            "description": "Verify your setup, then open any file and type.\n[Test Connection](command:leyline.testConnection)",
+            "media": {
+              "markdown": "walkthroughs/step-test.md"
+            },
+            "completionEvents": [
+              "onCommand:leyline.testConnection"
+            ]
+          }
+        ]
       }
     ],
     "keybindings": [
