@@ -2,7 +2,7 @@
 
 **Codestral users:** set your API key. It is stored in your OS keychain — never in files or logs.
 
-[$(key) Set API Key](command:leyline.setApiKey)
+[Set API Key](command:leyline.setApiKey)
 
 ---
 
