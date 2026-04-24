@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!--
+    Canonical Leyline triangle — single source of truth.
+    Transparent background, white fill.
+    Generated assets are derived from this file via scripts/generate-icons.sh.
+  -->
+  <line x1="128" y1="40" x2="48" y2="208" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <line x1="128" y1="40" x2="208" y2="208" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <line x1="48" y1="208" x2="208" y2="208" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="128" cy="150" r="16" fill="#ffffff"/>
+  <circle cx="48" cy="208" r="20" fill="#ffffff"/>
+  <circle cx="208" cy="208" r="20" fill="#ffffff"/>
+</svg>
