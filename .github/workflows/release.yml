@@ -67,7 +67,7 @@ jobs:
         run: bunx @vscode/vsce package --no-dependencies ${{ steps.meta.outputs.vsce_flag }}
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           body: ${{ steps.release-notes.outputs.release_notes }}
           prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}

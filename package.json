@@ -301,10 +301,10 @@
     "bench": "vitest bench --run"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
+    "@biomejs/biome": "^2.4.13",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.19.15",
-    "@types/vscode": "^1.110.0",
+    "@types/node": "^25.6.0",
+    "@types/vscode": "^1.116.0",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/tree-sitter-wasm": "^0.3.0",
