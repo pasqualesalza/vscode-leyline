@@ -12,3 +12,6 @@ PLAN.md
 .leyline-playground
 .claude/
 .vscode/settings.json
+icon.png
+assets/icon-variants/
+.DS_Store
