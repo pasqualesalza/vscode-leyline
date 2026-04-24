@@ -1,10 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
   <rect width="256" height="256" rx="52" fill="#0d0d1f"/>
-  <line x1="128" y1="44" x2="52" y2="200" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
-  <line x1="128" y1="44" x2="204" y2="200" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
-  <line x1="52" y1="200" x2="204" y2="200" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
-  <circle cx="128" cy="148" r="14" fill="#ffffff"/>
-  <circle cx="52" cy="200" r="18" fill="#ffffff"/>
-  <circle cx="204" cy="200" r="18" fill="#ffffff"/>
-  <circle cx="128" cy="44" r="18" fill="none" stroke="#ffffff" stroke-width="8" opacity="0.5"/>
+  <line x1="128" y1="40" x2="48" y2="208" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <line x1="128" y1="40" x2="208" y2="208" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <line x1="48" y1="208" x2="208" y2="208" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="128" cy="150" r="16" fill="#ffffff"/>
+  <circle cx="48" cy="208" r="20" fill="#ffffff"/>
+  <circle cx="208" cy="208" r="20" fill="#ffffff"/>
 </svg>
