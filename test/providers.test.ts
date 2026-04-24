@@ -193,6 +193,7 @@ describe("CodestralProvider", () => {
       ok: false,
       status: 401,
       statusText: "Unauthorized",
+      text: async () => "",
     });
 
     const provider = new CodestralProvider(
@@ -206,7 +207,30 @@ describe("CodestralProvider", () => {
         "typescript",
         new AbortController().signal,
       ),
-    ).rejects.toThrow("Codestral API error: 401 Unauthorized");
+    ).rejects.toThrow("Codestral API error (401): Unauthorized");
+  });
+
+  it("includes API error body in thrown message", async () => {
+    fetchMock.mockResolvedValue({
+      ok: false,
+      status: 401,
+      statusText: "Unauthorized",
+      text: async () =>
+        JSON.stringify({ message: "Invalid API key. Check your credentials." }),
+    });
+
+    const provider = new CodestralProvider(
+      async () => "test-key",
+      codestralConfig,
+    );
+    await expect(
+      provider.complete(
+        "prefix",
+        "suffix",
+        "typescript",
+        new AbortController().signal,
+      ),
+    ).rejects.toThrow("Invalid API key. Check your credentials.");
   });
 
   it("composes a timeout signal with the caller signal", async () => {
@@ -361,6 +385,7 @@ describe("OllamaProvider", () => {
       ok: false,
       status: 500,
       statusText: "Internal Server Error",
+      text: async () => "",
     });
 
     const provider = new OllamaProvider(async () => undefined, ollamaConfig);
@@ -371,7 +396,26 @@ describe("OllamaProvider", () => {
         "typescript",
         new AbortController().signal,
       ),
-    ).rejects.toThrow("Ollama API error: 500 Internal Server Error");
+    ).rejects.toThrow("Ollama API error (500): Internal Server Error");
+  });
+
+  it("includes API error body in thrown message", async () => {
+    fetchMock.mockResolvedValue({
+      ok: false,
+      status: 404,
+      statusText: "Not Found",
+      text: async () => JSON.stringify({ error: "model 'foo' not found" }),
+    });
+
+    const provider = new OllamaProvider(async () => undefined, ollamaConfig);
+    await expect(
+      provider.complete(
+        "prefix",
+        "suffix",
+        "typescript",
+        new AbortController().signal,
+      ),
+    ).rejects.toThrow("model 'foo' not found");
   });
 
   it("composes a timeout signal with the caller signal", async () => {

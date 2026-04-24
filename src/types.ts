@@ -1,4 +1,9 @@
-export type StatusBarState = "ready" | "loading" | "disabled" | "error";
+export type StatusBarState =
+  | "ready"
+  | "loading"
+  | "disabled"
+  | "error"
+  | "unconfigured";
 
 export interface ProviderConfig {
   endpoint: string;

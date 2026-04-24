@@ -5,7 +5,10 @@ import { trackRecentEdit } from "./context.js";
 import { initLog, log } from "./log.js";
 import { CodestralProvider } from "./providers/codestral.js";
 import { OllamaProvider } from "./providers/ollama.js";
-import type { CompletionProvider } from "./providers/provider.js";
+import {
+  type CompletionProvider,
+  providerRequiresApiKey,
+} from "./providers/provider.js";
 import { getApiKey, initSecretStorage, setApiKey } from "./secret.js";
 import { createStatusBar, updateStatusBar } from "./statusbar.js";
 import { GrammarRegistry, TreeSitterValidator } from "./tree-sitter.js";
@@ -13,8 +16,35 @@ import { GrammarRegistry, TreeSitterValidator } from "./tree-sitter.js";
 let currentProvider: CompletionProvider | undefined;
 
 function refreshStatusBar(): void {
+  const providerName = config.provider();
   if (!config.enabled()) {
-    updateStatusBar("disabled", config.provider());
+    updateStatusBar("disabled", providerName);
+    return;
+  }
+  if (providerRequiresApiKey(providerName)) {
+    getApiKey(providerName)
+      .then((key) => {
+        if (!key) {
+          updateStatusBar("unconfigured", providerName);
+          return;
+        }
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+          const lang = editor.document.languageId;
+          const excluded =
+            !config.enabledForLanguage(lang) ||
+            config
+              .disableInFiles()
+              .some(
+                (pattern) =>
+                  vscode.languages.match({ pattern }, editor.document) > 0,
+              );
+          updateStatusBar(excluded ? "disabled" : "ready", providerName);
+        } else {
+          updateStatusBar("ready", providerName);
+        }
+      })
+      .catch(() => {});
     return;
   }
   const editor = vscode.window.activeTextEditor;
@@ -27,9 +57,9 @@ function refreshStatusBar(): void {
         .some(
           (pattern) => vscode.languages.match({ pattern }, editor.document) > 0,
         );
-    updateStatusBar(excluded ? "disabled" : "ready", config.provider());
+    updateStatusBar(excluded ? "disabled" : "ready", providerName);
   } else {
-    updateStatusBar("ready", config.provider());
+    updateStatusBar("ready", providerName);
   }
 }
 
@@ -68,20 +98,22 @@ export function activate(context: vscode.ExtensionContext): void {
     );
   }
 
-  getApiKey(config.provider())
-    .then((key) => {
-      if (!key) {
-        vscode.window
-          .showInformationMessage(
-            "Leyline: No API key configured",
-            "Set API Key",
-          )
-          .then((choice) => {
-            if (choice) vscode.commands.executeCommand("leyline.setApiKey");
-          });
-      }
-    })
-    .catch(() => {});
+  if (providerRequiresApiKey(config.provider())) {
+    getApiKey(config.provider())
+      .then((key) => {
+        if (!key) {
+          vscode.window
+            .showInformationMessage(
+              "Leyline: No API key configured",
+              "Set API Key",
+            )
+            .then((choice) => {
+              if (choice) vscode.commands.executeCommand("leyline.setApiKey");
+            });
+        }
+      })
+      .catch(() => {});
+  }
 
   const completionProvider = new LeylineCompletionProvider(
     () => currentProvider,
@@ -108,6 +140,7 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.window.showInformationMessage(
           `Leyline: API key saved for ${providerName}`,
         );
+        refreshStatusBar();
       }
     },
   );
@@ -204,21 +237,24 @@ export function activate(context: vscode.ExtensionContext): void {
       }
 
       if (e.affectsConfiguration("leyline.provider")) {
-        getApiKey(config.provider())
-          .then((key) => {
-            if (!key) {
-              vscode.window
-                .showInformationMessage(
-                  "Leyline: No API key configured",
-                  "Set API Key",
-                )
-                .then((choice) => {
-                  if (choice)
-                    vscode.commands.executeCommand("leyline.setApiKey");
-                });
-            }
-          })
-          .catch(() => {});
+        const newProvider = config.provider();
+        if (providerRequiresApiKey(newProvider)) {
+          getApiKey(newProvider)
+            .then((key) => {
+              if (!key) {
+                vscode.window
+                  .showInformationMessage(
+                    "Leyline: No API key configured",
+                    "Set API Key",
+                  )
+                  .then((choice) => {
+                    if (choice)
+                      vscode.commands.executeCommand("leyline.setApiKey");
+                  });
+              }
+            })
+            .catch(() => {});
+        }
       }
     }
   });

@@ -13,13 +13,9 @@ export function estimateTokens(text: string): number {
   return Math.ceil(text.length / 4);
 }
 
-/** Get workspace-relative path for display. */
+/** Get workspace-relative path for display, normalized to forward slashes. */
 function relativePath(uri: vscode.Uri): string {
-  const folder = vscode.workspace.getWorkspaceFolder(uri);
-  if (folder) {
-    return uri.fsPath.slice(folder.uri.fsPath.length + 1);
-  }
-  return uri.fsPath.split("/").slice(-2).join("/");
+  return vscode.workspace.asRelativePath(uri, false).replace(/\\/g, "/");
 }
 
 /**
@@ -91,19 +87,15 @@ export function parseImports(prefix: string, languageId: string): Set<string> {
  * Check if a document's path matches any of the imported module paths.
  */
 function matchesImport(docUri: vscode.Uri, importPaths: Set<string>): boolean {
-  const docPath = docUri.fsPath;
-  // Also check just the filename without extension for fuzzy matching
-  const docBasename =
-    docPath
-      .split("/")
-      .pop()
-      ?.replace(/\.\w+$/, "") ?? "";
+  // Normalize to forward slashes so substring matching works cross-platform
+  const docPath = docUri.fsPath.replace(/\\/g, "/");
+  const docBasename = docUri.fsPath
+    .replace(/^.*[/\\]/, "")
+    .replace(/\.\w+$/, "");
 
   for (const imp of importPaths) {
-    // Strip leading ./ and file extension
     const normalized = imp.replace(/^\.\//, "").replace(/\.\w+$/, "");
 
-    // Direct path substring match (works for TS/JS relative imports)
     if (normalized && docPath.includes(normalized)) return true;
 
     // Last segment match: "com.example.User" → "User", "crate::types::Config" → "Config"
