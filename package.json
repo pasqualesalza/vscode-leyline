@@ -1,7 +1,7 @@
 {
   "name": "leyline",
   "displayName": "Leyline: Code Anticipation",
-  "description": "Lightweight inline code completion using configurable AI endpoints",
+  "description": "Inline AI code completion for Codestral and Ollama — bring-your-own-endpoint, local-model friendly, cross-file context, no telemetry.",
   "version": "0.3.0",
   "publisher": "pasqualesalza",
   "license": "MIT",
