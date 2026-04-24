@@ -28,7 +28,7 @@ export function updateStatusBar(
 
   switch (state) {
     case "ready": {
-      statusBarItem.text = "$(leyline-sparkle) Leyline";
+      statusBarItem.text = "$(leyline-ley) Leyline";
       const tip = new vscode.MarkdownString(
         lastProviderName
           ? `Leyline: Inline completion enabled — **${lastProviderName}**`

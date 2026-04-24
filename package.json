@@ -73,8 +73,8 @@
   ],
   "contributes": {
     "icons": {
-      "leyline-sparkle": {
-        "description": "Leyline sparkle icon",
+      "leyline-ley": {
+        "description": "Leyline icon",
         "default": {
           "fontPath": "assets/leyline.woff",
           "fontCharacter": "\\f101"
