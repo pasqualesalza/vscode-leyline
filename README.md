@@ -96,7 +96,7 @@ Settings (`Cmd+,`) and search for "leyline" to see all options grouped by:
 | --- | --- | --- |
 | `leyline.provider` | `"codestral"` | AI backend (`codestral` or `ollama`) |
 | `leyline.tabOverride` | `true` | Let Tab accept completions when IntelliSense is closed |
-| `leyline.enable` | `{ "*": true }` | Per-language toggle (e.g., `"markdown": false`) |
+| `leyline.enable` | `{ "*": true }` | Per-language toggle (e.g., `{ "*": true, "markdown": false, "json": false, "plaintext": false }`) |
 | `leyline.disableInFiles` | `[]` | Glob patterns to exclude (e.g., `"**/*.md"`) |
 | `leyline.multiline` | `"auto"` | `auto` / `always` / `never` |
 | `leyline.treeSitter` | `false` | Syntax validation via Tree-sitter |
@@ -168,6 +168,11 @@ behaviour.
 **Tab conflicts with another extension or snippet**  
 Set `leyline.tabOverride: false` to remove the Tab keybinding. Use `Alt+\` to
 accept completions instead.
+
+**Using Leyline alongside GitHub Copilot**  
+Both extensions compete for ghost text. If you want Leyline to be the sole
+completion source, disable Copilot: Extensions panel → search "GitHub Copilot"
+→ Disable.
 
 ## How It Works
 
