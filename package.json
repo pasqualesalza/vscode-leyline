@@ -77,7 +77,7 @@
         "description": "Leyline icon",
         "default": {
           "fontPath": "assets/leyline.woff",
-          "fontCharacter": "\\f102"
+          "fontCharacter": "\\f101"
         }
       }
     },
@@ -334,7 +334,7 @@
     ]
   },
   "scripts": {
-    "generate-icons": "bunx fantasticon assets --output assets --name leyline --font-types woff --asset-types json --font-height 1024 --normalize",
+    "generate-icons": "bunx fantasticon design --output assets --name leyline --font-types woff --asset-types json --font-height 1024 --normalize",
     "generate-all-icons": "bash scripts/generate-icons.sh",
     "compile": "tsc --noEmit && node esbuild.js",
     "watch": "node esbuild.js --watch",
