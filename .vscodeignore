@@ -12,7 +12,7 @@ out/**
 !dist/**/*.js
 !dist/**/*.wasm
 **/*.map
-**/*.svg
+assets/glyph.svg
 assets/*.json
 tsconfig.json
 tsconfig.e2e.json
