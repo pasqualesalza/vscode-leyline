@@ -3,7 +3,7 @@
 #
 # Source files (edit these):
 #   assets/icon.svg             — canonical icon design (dark bg + triangle + ghost point)
-#   assets/glyph.svg            — 16x16 monochrome font glyph
+#   design/glyph.svg            — 16x16 monochrome font glyph (input only, not in VSIX)
 #
 # Generated outputs:
 #   icon.png                    — 256x256 marketplace icon (PNG)
@@ -45,7 +45,7 @@ echo "✓  icon.png (256x256)"
 # assets/src/ is excluded intentionally — source files must not enter the font.
 
 cd "$REPO_ROOT"
-bunx fantasticon assets \
+bunx fantasticon design \
   --output assets \
   --name leyline \
   --font-types woff \
@@ -60,7 +60,7 @@ echo "✓  assets/leyline.woff + assets/leyline.json"
 echo ""
 echo "Done. File map:"
 echo "  assets/icon.svg             ← edit to change the icon design"
-echo "  assets/glyph.svg            ← edit to change the status bar glyph"
+echo "  design/glyph.svg            ← edit to change the status bar glyph"
 echo "  icon.png                    → marketplace icon (256x256)"
 echo "  assets/leyline.woff         → status bar icon font"
 echo "  assets/leyline.json         → glyph codepoint map"
