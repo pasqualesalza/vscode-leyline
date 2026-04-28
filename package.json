@@ -121,7 +121,7 @@
               "markdown": "walkthroughs/step-provider.md"
             },
             "completionEvents": [
-              "onSettingChanged:leyline.provider"
+              "onCommand:leyline.selectProvider"
             ]
           },
           {
