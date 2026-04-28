@@ -4,6 +4,11 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to publish (e.g. v0.4.0)"
+        required: true
 
 permissions:
   contents: write
@@ -13,12 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
 
       - name: Validate release
         env:
-          TAG: ${{ github.ref_name }}
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
         run: |
           # Validate tag format
           if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -39,7 +46,7 @@ jobs:
       - name: Detect pre-release
         id: meta
         env:
-          TAG: ${{ github.ref_name }}
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
         run: |
           # VS Code Marketplace convention: odd minor = pre-release, even minor = stable
           MINOR=$(echo "$TAG" | sed 's/v[0-9]*\.\([0-9]*\)\..*/\1/')
@@ -72,3 +79,9 @@ jobs:
           body: ${{ steps.release-notes.outputs.release_notes }}
           prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
           files: "*.vsix"
+
+      - name: Publish to VS Code Marketplace
+        if: ${{ secrets.VSCE_PAT != '' }}
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: bunx @vscode/vsce publish --no-dependencies ${{ steps.meta.outputs.vsce_flag }} --packagePath *.vsix
