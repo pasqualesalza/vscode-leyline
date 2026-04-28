@@ -2,6 +2,13 @@ const esbuild = require("esbuild");
 const fs = require("node:fs");
 const path = require("node:path");
 
+const treeSitterWasmPkg = JSON.parse(
+  fs.readFileSync(
+    path.join(__dirname, "node_modules/@vscode/tree-sitter-wasm/package.json"),
+    "utf8",
+  ),
+);
+
 const watch = process.argv.includes("--watch");
 const production = process.argv.includes("--production");
 
@@ -56,6 +63,9 @@ async function main() {
     outfile: "dist/extension.js",
     external: ["vscode"],
     logLevel: "silent",
+    define: {
+      TREE_SITTER_WASM_VERSION: JSON.stringify(treeSitterWasmPkg.version),
+    },
     plugins: [copyWasmPlugin, esbuildProblemMatcherPlugin],
   });
 

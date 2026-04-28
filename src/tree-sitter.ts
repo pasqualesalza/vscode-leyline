@@ -3,8 +3,8 @@ import * as path from "node:path";
 import { Language, Parser, type Tree } from "web-tree-sitter";
 import { log } from "./log.js";
 
-// Must match @vscode/tree-sitter-wasm version in devDependencies
-const TREE_SITTER_WASM_VERSION = "0.3.0";
+// Injected at build time from node_modules/@vscode/tree-sitter-wasm/package.json
+declare const TREE_SITTER_WASM_VERSION: string;
 const GRAMMAR_CDN_BASE = `https://cdn.jsdelivr.net/npm/@vscode/tree-sitter-wasm@${TREE_SITTER_WASM_VERSION}/wasm`;
 
 export const LANG_TO_GRAMMAR: Readonly<Record<string, string>> = {
