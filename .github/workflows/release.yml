@@ -16,6 +16,8 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -81,7 +83,5 @@ jobs:
           files: "*.vsix"
 
       - name: Publish to VS Code Marketplace
-        if: ${{ secrets.VSCE_PAT != '' }}
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        if: env.VSCE_PAT != ''
         run: bunx @vscode/vsce publish --no-dependencies ${{ steps.meta.outputs.vsce_flag }} --packagePath *.vsix
