@@ -8,7 +8,6 @@ run models locally — works with
 [Codestral](https://mistral.ai/technology/codestral) (Mistral FIM) and
 [Ollama](https://ollama.com).
 
-<!-- screenshot: ghost text inline completion -->
 
 ## Why Leyline
 
@@ -83,6 +82,7 @@ Press `Tab` to accept · `Escape` to dismiss · `Alt+\` to force-trigger
 | `Leyline: Select Provider` | | Switch between Codestral and Ollama |
 | `Leyline: Trigger Inline Completion` | `Alt+\` | Request a completion on demand |
 | `Leyline: Show Menu` | | Quick access to all actions |
+| `Leyline: Test Connection` | | Verify the endpoint is reachable |
 
 ## Configuration
 
