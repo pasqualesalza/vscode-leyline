@@ -58,11 +58,9 @@ export function updateStatusBar(
     }
     case "error": {
       statusBarItem.text = "$(error) Leyline";
-      const errTip = new vscode.MarkdownString(
-        errorMessage ? `Leyline: ${errorMessage}` : "Leyline: Error occurred",
-      );
-      errTip.isTrusted = true;
-      statusBarItem.tooltip = errTip;
+      statusBarItem.tooltip = errorMessage
+        ? `Leyline: ${errorMessage}`
+        : "Leyline: Error occurred";
       statusBarItem.backgroundColor = new vscode.ThemeColor(
         "statusBarItem.errorBackground",
       );

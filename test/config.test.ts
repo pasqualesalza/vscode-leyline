@@ -164,7 +164,7 @@ describe("numeric clamping", () => {
 
   it("providerConfig().requestTimeoutMs: clamps below min to 5000ms", () => {
     getMock.mockImplementation((key: string, defaultValue: unknown) => {
-      if (key === "requestTimeoutMs") return 1;
+      if (key === "requestTimeout") return 1;
       return defaultValue;
     });
     expect(providerConfig("codestral").requestTimeoutMs).toBe(5000);
@@ -172,7 +172,7 @@ describe("numeric clamping", () => {
 
   it("providerConfig().requestTimeoutMs: clamps above max to 120000ms", () => {
     getMock.mockImplementation((key: string, defaultValue: unknown) => {
-      if (key === "requestTimeoutMs") return 999;
+      if (key === "requestTimeout") return 999;
       return defaultValue;
     });
     expect(providerConfig("codestral").requestTimeoutMs).toBe(120_000);

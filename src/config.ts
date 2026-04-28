@@ -43,7 +43,7 @@ export function providerConfig(name: string): ProviderConfig {
   );
 
   const requestTimeoutMs =
-    clamp(cfg().get<number>("requestTimeoutMs", 30), 5, 120) * 1000;
+    clamp(cfg().get<number>("requestTimeout", 30), 5, 120) * 1000;
 
   const mode = cfg().get<string>("multiline", "auto");
   const stop = mode === "always" ? [] : mode === "never" ? ["\n"] : ["\n\n"];
