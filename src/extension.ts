@@ -270,7 +270,7 @@ export function activate(context: vscode.ExtensionContext): void {
             if (response.ok) {
               const ep = providerCfg.endpoint;
               vscode.window.showInformationMessage(
-                `$(check) Leyline: Connection successful — ${providerName} at ${ep}`,
+                `Leyline: Connection successful — ${providerName} at ${ep}`,
               );
               log()?.info(`Test connection OK: provider=${providerName}`);
             } else {
