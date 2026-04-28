@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] - 2026-04-28
+
+### Added
+
+- Walkthrough icon uses `assets/icon.svg` directly (resolution-independent, no separate PNG needed).
+- `Leyline: Test Connection` command added to README commands table.
+
+### Changed
+
+- Icon redesigned: triangle ley line with ghost point, new status bar glyph.
+- Asset pipeline simplified: `design/glyph.svg` is now the sole font source; `assets/icon.svg` is the canonical icon for both marketplace and walkthrough.
+- `@vscode/tree-sitter-wasm` pinned to exact version; version injected at build time via esbuild for determinism.
+- `engines.vscode` bumped to `^1.116.0` to match `@types/vscode` devDependency.
+- Release workflow: added `workflow_dispatch` trigger and VS Code Marketplace publish step.
+
+### Fixed
+
+- `leyline.requestTimeout` setting was silently ignored (config read wrong key).
+- Status bar error tooltip no longer uses `isTrusted: true` — provider error text is external input.
+- Removed invalid `AI` category from `package.json` (not in VS Code Marketplace allowlist).
+- `SECURITY.md` updated to "latest release is supported" — no stale version table.
+
 ## [0.3.0] - 2026-04-14 (Pre-release)
 
 ### Added

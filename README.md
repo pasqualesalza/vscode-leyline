@@ -8,7 +8,6 @@ run models locally — works with
 [Codestral](https://mistral.ai/technology/codestral) (Mistral FIM) and
 [Ollama](https://ollama.com).
 
-
 ## Why Leyline
 
 Most AI completion tools send your code to a fixed cloud service and charge a
