@@ -3,8 +3,9 @@ import * as path from "node:path";
 import { Language, Parser, type Tree } from "web-tree-sitter";
 import { log } from "./log.js";
 
-const GRAMMAR_PKG_VERSION = "0.3.0";
-const GRAMMAR_CDN_BASE = `https://cdn.jsdelivr.net/npm/@vscode/tree-sitter-wasm@${GRAMMAR_PKG_VERSION}/wasm`;
+// Must match @vscode/tree-sitter-wasm version in devDependencies
+const TREE_SITTER_WASM_VERSION = "0.3.0";
+const GRAMMAR_CDN_BASE = `https://cdn.jsdelivr.net/npm/@vscode/tree-sitter-wasm@${TREE_SITTER_WASM_VERSION}/wasm`;
 
 export const LANG_TO_GRAMMAR: Readonly<Record<string, string>> = {
   typescript: "typescript",
