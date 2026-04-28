@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.4.1] - 2026-04-28
+
+### Fixed
+
+- Walkthrough step 1 now completes when the provider command runs, not only when the setting changes (default selection was never detected).
+- Status bar glyph redesigned: hollow triangle with corner nodes and nexus dot — no longer resembles a warning icon.
+- Remove `$(check)` codicon from Test Connection notification (not rendered in message context).
+- Marketplace keywords trimmed to 10 and improved (removed misleading terms, added `AI code completion`, `local LLM`).
+
 ## [0.4.0] - 2026-04-28
 
 ### Added
