@@ -27,14 +27,6 @@ subscription. Leyline is different:
 Search for **Leyline** in the VS Code Extensions panel (`Ctrl+Shift+X`) and
 click Install.
 
-Alternatively, download the VSIX from the
-[Releases page](https://github.com/pasqualesalza/vscode-leyline/releases) and
-run:
-
-```bash
-code --install-extension leyline-*.vsix
-```
-
 ## Quick Start
 
 1. Open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
